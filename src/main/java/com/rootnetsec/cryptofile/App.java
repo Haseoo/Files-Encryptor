@@ -4,8 +4,8 @@ public class App {
 
     public static void main(String[] args) {
         Crypto crypto = new Crypto();
-        byte[] ciphertext = crypto.Encrypt("Hello World".getBytes(), "qwertyiopasdasdasdasdasd".getBytes());
-        byte[] plaintext = crypto.Decrypt(ciphertext, "qwertyiopasdasdasdasdasd".getBytes());
+        byte[] ciphertext = crypto.EncryptBytes("Hello World".getBytes(), "qwerty");
+        byte[] plaintext = crypto.DecryptBytes(ciphertext, "qwerty");
         
         System.out.println(new String(plaintext));
 
