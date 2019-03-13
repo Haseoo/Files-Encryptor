@@ -1,51 +1,78 @@
 package com.rootnetsec.cryptofile;
 
-import com.google.crypto.tink.Aead;
-import com.google.crypto.tink.KeysetHandle;
-import com.google.crypto.tink.aead.AeadConfig;
-import com.google.crypto.tink.aead.AeadFactory;
-import com.google.crypto.tink.aead.AeadKeyTemplates;
+import java.util.Arrays;
+import java.nio.ByteBuffer;
+import java.security.Provider;
+import java.security.SecureRandom;
 
-import java.security.GeneralSecurityException;
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Crypto {
-    Aead aead;
+    private static final int TAG_LENGTH_BIT = 128;
+    private static final int IV_LENGTH_BYTE = 12;
 
-    public Crypto() {
-        try {
-            AeadConfig.register();
-            KeysetHandle keysetHandle = KeysetHandle.generateNew(
-                AeadKeyTemplates.AES128_GCM);
+    public byte[] Encrypt(byte[] plaintext, byte[] user_key) {
         
-            aead = AeadFactory.getPrimitive(keysetHandle);
-
-        } catch (GeneralSecurityException e) {
-            System.out.println(e);
-            System.exit(1);
-        }
-    }
-
-    public byte[] encrypt(byte[] plaintext, byte[] key) {
         try {
-            byte[] ciphertext = aead.encrypt(plaintext, key);
-            return ciphertext;
+            SecureRandom secureRandom = new SecureRandom();
 
-        } catch (GeneralSecurityException e) {
+            byte[] iv = new byte[12];
+            secureRandom.nextBytes(iv);
+
+            final SecretKeySpec key = new SecretKeySpec(user_key, "AES");
+            GCMParameterSpec parameters = new GCMParameterSpec(128, iv);
+
+            final Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            cipher.init(Cipher.ENCRYPT_MODE, key, parameters);
+
+            byte[] ciphertext = cipher.doFinal(plaintext);
+
+            ByteBuffer byte_buffer = ByteBuffer.allocate(4 + iv.length + ciphertext.length);
+            byte_buffer.putInt(iv.length);
+            byte_buffer.put(iv);
+            byte_buffer.put(ciphertext);
+
+            Arrays.fill(user_key, (byte)0);
+            Arrays.fill(iv, (byte)0);
+
+            return byte_buffer.array();
+
+        } catch (Exception e) {
             System.out.println(e);
-            System.exit(1);
         }
+
         return null;
     }
 
-    public byte[] decrypt(byte[] ciphertext, byte[] key) {
+    public byte[] Decrypt(byte[] encrypted_data, byte[] user_key) {
         try {
-            byte[] plaintext = aead.decrypt(ciphertext, key);
+            ByteBuffer byte_buffer = ByteBuffer.wrap(encrypted_data);
+            int iv_length = byte_buffer.getInt();
+
+            if (iv_length < 12 || iv_length >= 16) {
+                return null;
+            }
+
+            byte[] iv = new byte[iv_length];
+            byte_buffer.get(iv);
+            byte[] ciphertext = new byte[byte_buffer.remaining()];
+            byte_buffer.get(ciphertext);
+            
+            final SecretKeySpec key = new SecretKeySpec(user_key, "AES");
+            GCMParameterSpec parameters = new GCMParameterSpec(128, iv);
+
+            final Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+
+            cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(128, iv));
+            byte[] plaintext = cipher.doFinal(ciphertext);
             return plaintext;
 
-        } catch (GeneralSecurityException e) {
+        } catch (Exception e) {
             System.out.println(e);
-            System.exit(1);
         }
+
         return null;
     }
 
