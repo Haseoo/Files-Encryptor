@@ -1,7 +1,9 @@
 package com.rootnetsec.cryptofile;
 
-import java.io.*;
-import java.net.*;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import jetbrains.exodus.util.HexUtil;
 
 import java.security.MessageDigest;
@@ -15,16 +17,16 @@ public final class PasswordService {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             byte[] digestedPassword = md.digest(password.getBytes());
             String hash = HexUtil.byteArrayToString(digestedPassword).toUpperCase();
-            String prefixHash = hash.substring(0, 5);
-            String suffixHash = hash.substring(5);
+            String hashPrefix = hash.substring(0, 5);
+            String hashSuffix = hash.substring(5);
             
-            URL url = new URL(PWNED_API + prefixHash);
+            URL url = new URL(PWNED_API + hashPrefix);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
             while ((line = rd.readLine()) != null) {
-                if (line.startsWith(suffixHash)) {
+                if (line.startsWith(hashSuffix)) {
                     result = true;
                 }
             }

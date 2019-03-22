@@ -6,8 +6,8 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
 
 public final class PBKDF2Hashing {
+    public static final int SALT_BYTES              = 24;
     private static final String PBKDF2_ALGORITHM    = "PBKDF2WithHmacSHA1";
-    private static final int SALT_BYTES             = 24;
     private static final int HASH_BYTES             = 32;
     private static final int HASH_ITERATIONS        = 10000;
 
