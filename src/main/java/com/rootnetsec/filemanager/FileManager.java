@@ -16,15 +16,16 @@ abstract public class FileManager {
 
     static final long maxChunkSize = Integer.MAX_VALUE / 3;
 
-    static final int headerSize = 50;
+    static final int headerSize = 54;
     static final short magicHeader = (short)0xDEAD;
 
     public FileManager(String inputPath, String outputPath) throws FileNotFoundException {
         inputStream = new FileInputStream(inputPath);
+        outputStream = new FileOutputStream(outputPath);
         fileSize = new File(inputPath).length();
     }
 
-    abstract public byte[] getChunk() throws IOException, IndexOutOfBoundsException;
+    abstract public byte[] getChunk() throws IOException;
     abstract public void writeChunk(byte[] data) throws IOException;
 
     public int getNumberOfChunks() {
