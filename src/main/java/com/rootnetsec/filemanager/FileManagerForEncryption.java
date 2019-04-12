@@ -1,15 +1,35 @@
 package com.rootnetsec.filemanager;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 
 public class FileManagerForEncryption extends FileManager {
-    public FileManagerForEncryption(String inputPath, String outputPath) throws FileNotFoundException {
+    public FileManagerForEncryption(String inputPath, String outputPath, byte[] salt, byte[] iv) throws FileNotFoundException , IOException{
         super(inputPath, outputPath);
         numberOfChunks = (int)(Math.ceil((fileSize / (double)maxChunkSize)));
         outputStream = new FileOutputStream(outputPath);
+
+        outputStream.write(prepareHeader(salt, iv));
     }
 
-    public byte[] getChunk() throws IOException, IndexOutOfBoundsException {
+    private byte[] prepareHeader(byte[] salt, byte[] iv) {
+        ByteBuffer header = ByteBuffer.allocate(headerSize);
+        header.putShort(magicHeader);
+
+        header.putInt(numberOfChunks);
+
+        header.putInt(salt.length);
+
+        header.put(salt);
+
+        header.putInt(iv.length);
+
+        header.put(iv);
+        
+        return header.array();
+    }
+
+    public byte[] getChunk() throws IOException {
         if (currentChunk > numberOfChunks) {
             throw new IndexOutOfBoundsException("Index " + currentChunk + " is out of bounds!");
         }
@@ -23,11 +43,9 @@ public class FileManagerForEncryption extends FileManager {
     }
 
     public void writeChunk(byte[] data) throws IOException {
-        if (currentChunk == 0) {
-            System.out.println("Add header.");
-        }
-
-        outputStream.write(data.length);
+        ByteBuffer chunkSizeByte = ByteBuffer.allocate(Integer.BYTES);
+        chunkSizeByte.putInt(data.length);
+        outputStream.write(chunkSizeByte.array());
         outputStream.write(data);
     }
 

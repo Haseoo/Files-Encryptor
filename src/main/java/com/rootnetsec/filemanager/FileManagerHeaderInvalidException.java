@@ -1,6 +1,8 @@
 package com.rootnetsec.filemanager;
 
-public class FileManagerHeaderInvalidException extends Exception {
+import java.io.IOException;
+
+public class FileManagerHeaderInvalidException extends IOException {
     public FileManagerHeaderInvalidException(String exception) {
         super(exception);
     } 

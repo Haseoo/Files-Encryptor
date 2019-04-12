@@ -24,7 +24,7 @@ abstract public class FileManager {
         fileSize = new File(inputPath).length();
     }
 
-    abstract public byte[] getChunk() throws IOException, IndexOutOfBoundsException;
+    abstract public byte[] getChunk() throws IOException;
     abstract public void writeChunk(byte[] data) throws IOException;
 
     public int getNumberOfChunks() {
