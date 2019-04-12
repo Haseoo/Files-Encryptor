@@ -35,7 +35,7 @@ public class FileManagerForDecryption extends FileManager {
             throw new FileManagerHeaderInvalidException("IV bytes lenght invalid");
         }
         iv = new byte[AesCipher.IV_LENGHT];
-        AesCipher.IV_LENGHT.get(iv);
+        headerBuffer.get(iv);
 
     }
 
