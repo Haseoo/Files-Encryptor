@@ -21,6 +21,7 @@ abstract public class FileManager {
 
     public FileManager(String inputPath, String outputPath) throws FileNotFoundException {
         inputStream = new FileInputStream(inputPath);
+        outputStream = new FileOutputStream(outputPath);
         fileSize = new File(inputPath).length();
     }
 
