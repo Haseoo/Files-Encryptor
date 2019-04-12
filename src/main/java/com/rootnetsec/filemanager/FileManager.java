@@ -16,7 +16,7 @@ abstract public class FileManager {
 
     static final long maxChunkSize = Integer.MAX_VALUE / 3;
 
-    static final int headerSize = 50;
+    static final int headerSize = 54;
     static final short magicHeader = (short)0xDEAD;
 
     public FileManager(String inputPath, String outputPath) throws FileNotFoundException {
