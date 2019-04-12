@@ -9,12 +9,14 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.spec.GCMParameterSpec;
 
-public final class AESGCMEncryption {
+public final class AESEncryption {
     private static final String AES_ALGORITHM   = "AES/GCM/NoPadding";
     private static final int TAG_LENGTH_BIT     = 128;
-    private static final int IV_LENGTH          = 12;
+    public static final int IV_LENGTH          = 12;
 
-    public static byte[] encryptBytesWithAES(byte[] data, String userKey) {
+    
+
+    public static byte[] encryptBytes(byte[] data, String userKey) {
         ByteBuffer hashBuffer = ByteBuffer.wrap(PBKDF2Hashing.hash(userKey));
         int saltLength = hashBuffer.getInt();
         byte[] salt = new byte[saltLength];
@@ -48,7 +50,7 @@ public final class AESGCMEncryption {
         }
     }
 
-    public static byte[] decryptBytesWithAES(byte[] data, String userKey) {
+    public static byte[] decryptBytes(byte[] data, String userKey) {
         try {
             ByteBuffer byteBuffer = ByteBuffer.wrap(data);
             int saltLength = byteBuffer.getInt();
