@@ -28,7 +28,7 @@ abstract public class FileManager {
         currentChunk = 0;
     }
 
-    abstract public byte[] getChunk() throws IOException, IndexOutOfBoundsException;
+    abstract public byte[] getChunk() throws IOException;
     abstract public void writeChunk(byte[] data) throws IOException;
 
     public int getNumberOfChunks() {
