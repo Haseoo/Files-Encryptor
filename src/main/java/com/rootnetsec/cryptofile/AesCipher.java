@@ -17,7 +17,7 @@ public final class AesCipher {
     public static final int IV_LENGTH          = 16;
 
 
-    public static void encryptFile(String userKey) {
+    public static void encryptFile(String srcFile, String destFile, String userKey) {
         ByteBuffer hashBuffer = ByteBuffer.wrap(PBKDF2Hashing.hash(userKey));
         int saltLength = hashBuffer.getInt();
         byte[] salt = new byte[saltLength];
@@ -28,7 +28,7 @@ public final class AesCipher {
         byte[] iv = RandomBytesGenerator.generate(IV_LENGTH);
 
         try {
-            FileManagerForEncryption fileManager = new FileManagerForEncryption("README.md", "README.enc", salt, iv);
+            FileManagerForEncryption fileManager = new FileManagerForEncryption(srcFile, destFile, salt, iv);
 
             final SecretKeySpec key = new SecretKeySpec(hash, "AES");
             IvParameterSpec parameters = new IvParameterSpec(iv);
@@ -55,9 +55,9 @@ public final class AesCipher {
         }
     }
 
-    public static void decryptFile(String userKey) {
+    public static void decryptFile(String srcFile, String destFile, String userKey) {
         try {
-            FileManagerForDecryption fileManager = new FileManagerForDecryption("README.enc", "tmp.txt");
+            FileManagerForDecryption fileManager = new FileManagerForDecryption(srcFile, destFile);
 
             byte[] salt = fileManager.getSalt();
             byte[] hash = PBKDF2Hashing.hash(userKey, salt);

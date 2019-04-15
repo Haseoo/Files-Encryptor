@@ -65,13 +65,4 @@ public class FileManagerForDecryption extends FileManager {
         return this.salt;
     }
 
-
-    public byte[] getSalt() {
-        return salt;
-    }
-
-    public byte[] getIV() {
-        return iv;
-    }
-
 }

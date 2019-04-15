@@ -14,12 +14,11 @@ abstract public class FileManager {
                     currentChunk, 
                     numberOfChunks;
 
-    static final long maxChunkSize = 0x10;//Integer.MAX_VALUE / 3;
+    static final long maxChunkSize = Integer.MAX_VALUE / 4;
 
     static final int headerSize = 54;
     static final short magicHeader = (short)0xDEAD;
 
-    byte[] salt, iv;
 
     public FileManager(String inputPath, String outputPath) throws FileNotFoundException {
         inputStream = new FileInputStream(inputPath);
