@@ -27,8 +27,7 @@ public final class AesCipher {
 
         byte[] iv = RandomBytesGenerator.generate(IV_LENGTH);
 
-        try {
-            FileManagerForEncryption fileManager = new FileManagerForEncryption(srcFile, destFile, salt, iv);
+        try (FileManagerForEncryption fileManager = new FileManagerForEncryption(srcFile, destFile, salt, iv)) {
 
             final SecretKeySpec key = new SecretKeySpec(hash, "AES");
             IvParameterSpec parameters = new IvParameterSpec(iv);
@@ -56,8 +55,7 @@ public final class AesCipher {
     }
 
     public static void decryptFile(String srcFile, String destFile, String userKey) {
-        try {
-            FileManagerForDecryption fileManager = new FileManagerForDecryption(srcFile, destFile);
+        try (FileManagerForDecryption fileManager = new FileManagerForDecryption(srcFile, destFile)) {
 
             byte[] salt = fileManager.getSalt();
             byte[] hash = PBKDF2Hashing.hash(userKey, salt);

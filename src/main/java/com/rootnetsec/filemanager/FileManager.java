@@ -2,7 +2,7 @@ package com.rootnetsec.filemanager;
 
 import java.io.*;
 
-abstract public class FileManager {
+abstract public class FileManager implements AutoCloseable {
     protected String    inPath, 
                         outPath;
 
@@ -25,6 +25,12 @@ abstract public class FileManager {
         outputStream = new FileOutputStream(outputPath);
         fileSize = new File(inputPath).length();
         currentChunk = 0;
+    }
+
+    @Override
+    final public void close() throws IOException {
+        inputStream.close();
+        outputStream.close();
     }
 
     abstract public byte[] getChunk() throws IOException;
