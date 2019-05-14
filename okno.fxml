@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?scenebuilder-background-color 0xf8f8f8ff?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="549.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <GridPane alignment="TOP_CENTER" layoutX="38.0" layoutY="240.0" prefHeight="274.0" prefWidth="513.0">
+      <children>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Source file" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Destination" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Encryption type" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Size of chunk" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+        <Button mnemonicParsing="false" text="Browse" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+        <Button mnemonicParsing="false" text="Browse" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+        <TextField prefWidth="319.9998779296875" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <PasswordField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <ChoiceBox prefWidth="331.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+        </ChoiceBox>
+        <ChoiceBox cache="false" prefWidth="331.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+        </ChoiceBox>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mode" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+        <Button mnemonicParsing="false" prefWidth="87.78076171875" text="Start" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
+        <ProgressBar prefHeight="26.0" prefWidth="291.0" progress="0.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="CENTER" />
+        <ChoiceBox prefWidth="305.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+        </ChoiceBox>
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="169.0" minWidth="10.0" prefWidth="116.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="344.0" minWidth="10.0" prefWidth="305.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="171.0" minWidth="10.0" prefWidth="92.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+    <ImageView fitHeight="201.11659240722656" fitWidth="503.92134839271233" layoutX="31.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="file:/D:/Dokumenty/GitHub/crypto-file/logo2.png" />
+      </image>
+    </ImageView>
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d40000" height="26.0" layoutX="0.0" layoutY="0.0" smooth="true" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="600.0" />
+    <Region blendMode="SOFT_LIGHT" layoutX="552.0" layoutY="0.0" onMouseClicked="Close" prefHeight="26.0" prefWidth="48.0">
+      <effect>
+        <Bloom />
+      </effect>
+    </Region>
+  </children>
+</AnchorPane>
