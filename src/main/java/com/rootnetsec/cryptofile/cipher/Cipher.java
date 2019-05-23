@@ -18,5 +18,5 @@ abstract class Cipher {
     }
 
     public abstract void decryptFile(String srcFile, String destFile, String userKey);
-    public abstract void encryptFile(FileManager file, String userKey); //TU będzie fileManagerForDecryption in di fjuczer
+    public abstract void encryptFile(String srcFile, String destFile, String userKey); //TU będzie fileManagerForDecryption in di fjuczer
 }
