@@ -1,13 +1,18 @@
-package com.rootnetsec.cryptofile.cipher.AES;
+package com.rootnetsec.cryptofile.cipher.aes;
 
-import com.rootnetsec.cryptofile.cipher;
 import com.rootnetsec.cryptofile.AesCipher;
+import com.rootnetsec.cryptofile.cipher.Cipher;
 
-class AES extends Cipher {
-    void decryptFile(String srcFile, String destFile, String userKey) {
+public class AES extends Cipher {
+    public AES() {
+        super();
+    }
+    @Override
+    public void decryptFile(String srcFile, String destFile, String userKey) {
         AesCipher.decryptFile(srcFile, destFile, userKey);
     }
-    void encryptFile(String srcFile, String destFile, String userKey) {
+    @Override
+    public void encryptFile(String srcFile, String destFile, String userKey) {
          AesCipher.encryptFile(srcFile, destFile, userKey);
     }
 
