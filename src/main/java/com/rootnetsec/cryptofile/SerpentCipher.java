@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.security.Provider;
 
 import javax.crypto.Cipher;
+import java.security.Security;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
@@ -11,7 +12,7 @@ import javax.crypto.spec.IvParameterSpec;
 
 import com.rootnetsec.filemanager.*;
 
-public final class AesCipher {
+public final class SerpentCipher {
     public static final int IV_LENGTH          = 16;
 
     public static void encryptFile(String srcFile, String destFile, String userKey) {
@@ -24,12 +25,14 @@ public final class AesCipher {
 
         byte[] iv = RandomBytesGenerator.generate(IV_LENGTH);
 
+        Security.setProperty("crypto.policy", "unlimited");
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         try (FileManagerForEncryption fileManager = new FileManagerForEncryption(srcFile, destFile, salt, iv)) {
 
-            final SecretKeySpec key = new SecretKeySpec(hash, "AES");
+            final SecretKeySpec key = new SecretKeySpec(hash, "SERPENT");
             IvParameterSpec parameters = new IvParameterSpec(iv);
 
-            final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            final Cipher cipher = Cipher.getInstance("Serpent/CBC/PKCS7Padding", "BC");
             cipher.init(Cipher.ENCRYPT_MODE, key, parameters);
             
             for (int i = 0; i < fileManager.getNumberOfChunks(); i++) {
@@ -59,11 +62,12 @@ public final class AesCipher {
 
             byte[] iv = fileManager.getIV();
 
-            final SecretKeySpec key = new SecretKeySpec(hash, "AES");
+            final SecretKeySpec key = new SecretKeySpec(hash, "SERPENT");
             IvParameterSpec parameters = new IvParameterSpec(iv);
 
-            final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-
+            Security.setProperty("crypto.policy", "unlimited");
+            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+            final Cipher cipher = Cipher.getInstance("Serpent/CBC/PKCS7Padding", "BC");;
             cipher.init(Cipher.DECRYPT_MODE, key, parameters);
 
             for (int i = 0; i < fileManager.getNumberOfChunks(); i++) {

@@ -61,11 +61,23 @@ public class App {
         try {
         ArgsParser parser = new ArgsParser(args);
         
-        
+        /*
         if (parser.getMode() == WorkingMode.ENCRYPTION)
             AesCipher.encryptFile(parser.getSrcFilePath(), parser.getDestFilePath(), parser.getPassword());
         else 
             AesCipher.decryptFile(parser.getSrcFilePath(), parser.getDestFilePath(), parser.getPassword());
+        
+
+        if (parser.getMode() == WorkingMode.ENCRYPTION)
+            SerpentCipher.encryptFile(parser.getSrcFilePath(), parser.getDestFilePath(), parser.getPassword());
+        else 
+            SerpentCipher.decryptFile(parser.getSrcFilePath(), parser.getDestFilePath(), parser.getPassword());
+        */
+
+        if (parser.getMode() == WorkingMode.ENCRYPTION)
+            TwofishCipher.encryptFile(parser.getSrcFilePath(), parser.getDestFilePath(), parser.getPassword());
+        else 
+            TwofishCipher.decryptFile(parser.getSrcFilePath(), parser.getDestFilePath(), parser.getPassword());
 
         System.out.println("Success!");
 

@@ -16,6 +16,8 @@ repositories {
 dependencies {
     compile group: 'org.jetbrains.xodus', name: 'xodus-utils', version: '1.3.0'
     compile 'org.apache.commons:commons-crypto:1.0.0'
+    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.61'
+
     implementation 'com.google.guava:guava:27.0.1-jre'
     testImplementation 'junit:junit:4.12'
 }
