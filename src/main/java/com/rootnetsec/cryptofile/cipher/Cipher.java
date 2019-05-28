@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import java.nio.ByteBuffer;
-import com.rootnetsec.cryptofile.cipher.aes.AES;
+import com.rootnetsec.cryptofile.cipher.javaCipher.*;
 
 abstract public class Cipher {
     enum EncryptionType {
@@ -35,8 +35,8 @@ abstract public class Cipher {
         }
         byte type = headerBuffer.get();
         Cipher retVal = null;
-        if (type == 0) {
-            retVal = new AES();
+        if (type == 1) {
+            retVal = new AESCipher();
         } else {
             inputStream.close();
             throw new InvalidHeaderException("Encypted file has invalid header");
@@ -62,6 +62,6 @@ abstract public class Cipher {
         this.currentChunk = currentChunk;
     }
 
-    public abstract void decryptFile(String srcFile, String destFile, String userKey);
-    public abstract void encryptFile(String srcFile, String destFile, String userKey); 
+    public abstract void decryptFile(String srcFile, String destFile, String userKey) throws Exception;
+    public abstract void encryptFile(String srcFile, String destFile, String userKey) throws Exception; 
 }

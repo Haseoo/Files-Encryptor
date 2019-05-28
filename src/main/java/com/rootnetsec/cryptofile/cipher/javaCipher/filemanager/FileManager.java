@@ -1,6 +1,4 @@
-package com.rootnetsec.filemanagern;
-
-import com.rootnetsec.cryptofile.cipher.Cipher;
+package com.rootnetsec.cryptofile.cipher.javaCipher.filemanager;
 
 import java.io.*;
 
@@ -16,10 +14,10 @@ abstract public class FileManager implements AutoCloseable {
                     currentChunk, 
                     numberOfChunks;
 
-    
-    static public final short magicHeader = Cipher.magicHeader;
-    static public final int shortHeaderSize = 7;
-    static public final int maxChunkSize = Integer.MAX_VALUE / 3;
+    static final long maxChunkSize = Integer.MAX_VALUE / 4;
+
+    static final int headerSize = 55;
+    static final short magicHeader = (short)0xDEAD;
 
 
     public FileManager(String inputPath, String outputPath) throws FileNotFoundException {

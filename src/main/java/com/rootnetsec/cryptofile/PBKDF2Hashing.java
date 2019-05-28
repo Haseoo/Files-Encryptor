@@ -1,6 +1,5 @@
 package com.rootnetsec.cryptofile;
 
-import java.util.Arrays;
 import java.nio.ByteBuffer;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;

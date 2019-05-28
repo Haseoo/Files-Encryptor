@@ -1,15 +1,18 @@
-package com.rootnetsec.filemanagern;
+package com.rootnetsec.cryptofile.cipher.javaCipher.filemanager;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import com.rootnetsec.cryptofile.PBKDF2Hashing;
+import com.rootnetsec.cryptofile.cipher.javaCipher.JavaSTDCipher;
 
 public class FileManagerForDecryption extends FileManager {
-    private boolean headerReaded = false;
+    private byte[] salt,
+                   iv;
 
     public FileManagerForDecryption(String inputPath, String outputPath) throws FileNotFoundException, IOException, FileManagerHeaderInvalidException {
         super(inputPath, outputPath);
-        byte[] header = new byte[shortHeaderSize];
-        inputStream.read(header, 0, shortHeaderSize);
+        byte[] header = new byte[headerSize];
+        inputStream.read(header, 0, headerSize);
         ByteBuffer headerBuffer = ByteBuffer.wrap(header);
         
         short tmpMagicHeader = headerBuffer.getShort();
@@ -17,18 +20,29 @@ public class FileManagerForDecryption extends FileManager {
             throw new FileManagerHeaderInvalidException("Magic header invalid");
         }
 
-        headerBuffer.get(); //Skips type flag
+        headerBuffer.get(); //skips byte about type
 
         numberOfChunks = headerBuffer.getInt();
+
+        int tmpSaltSize = headerBuffer.getInt();
+        if (tmpSaltSize != PBKDF2Hashing.SALT_BYTES) {
+            throw new FileManagerHeaderInvalidException("Salt bytes lenght invalid");
+        }
+        salt = new byte[PBKDF2Hashing.SALT_BYTES];
+        headerBuffer.get(salt);
+
+        int tmpIVSize = headerBuffer.getInt();
+        if (tmpIVSize != JavaSTDCipher.IV_LENGTH) {
+            throw new FileManagerHeaderInvalidException("IV bytes lenght invalid");
+        }
+        iv = new byte[JavaSTDCipher.IV_LENGTH];
+        headerBuffer.get(iv);
 
     }
 
     public byte[] getChunk() throws IOException {
         if (currentChunk > numberOfChunks) {
             throw new IndexOutOfBoundsException("Index " + currentChunk + " is out of bounds!");
-        }
-        if (!headerReaded) {
-            //TODO throw runtime error
         }
         byte[] chunkSizeByte = new byte[4];
         inputStream.read(chunkSizeByte);
@@ -44,18 +58,12 @@ public class FileManagerForDecryption extends FileManager {
         outputStream.write(data);
     }
 
-    public byte[] getHeader(int headerSize) throws IOException {
-        byte[] header = null;
-        if (!headerReaded) {
-            inputStream.reset();
-            header = new byte [headerSize];
-            inputStream.read(header);
-            headerReaded = true;
-        } else {
-           //TODO throw runtime error
-        }
-        return header;
+    public byte[] getIV() {
+        return this.iv;
     }
-    
+
+    public byte[] getSalt() {
+        return this.salt;
+    }
 
 }

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane id="BorderPane" fx:id="mainPane" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rootnetsec.cryptofile.cipher.MainController">
+   <bottom>
+      <HBox alignment="CENTER_LEFT" fillHeight="false">
+         <children>
+            <Label fx:id="statusText" text="Status:  OK    " />
+            <ProgressIndicator fx:id="working" prefHeight="18.0" prefWidth="19.0" visible="false" />
+         </children></HBox>
+   </bottom>
+   <center>
+      <GridPane alignment="TOP_CENTER" BorderPane.alignment="TOP_CENTER">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Source file " GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Destination " GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password " GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Encryption type" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+            <Button mnemonicParsing="false" onAction="#inputFileBrowse" text="Browse" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+            <Button mnemonicParsing="false" onAction="#outputFileBrowse" text="Browse" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <TextField fx:id="inputFile" alignment="CENTER_LEFT" editable="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+            <TextField fx:id="outputFile" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <PasswordField fx:id="password" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mode" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <ChoiceBox fx:id="encryptionType" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+               <items>
+                  <FXCollections fx:factory="observableArrayList">
+                     <String fx:value="AES" />
+                     <String fx:value="Fisz" />
+                     <String fx:value="Serpentyna" />
+                  </FXCollections>
+               </items>
+            </ChoiceBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <children>
+                  <RadioButton fx:id="encRadio" mnemonicParsing="false" onAction="#onEncRadio" selected="true" text="Encryption" textAlignment="CENTER">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="mode" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <Separator orientation="VERTICAL" prefHeight="39.0" prefWidth="24.0" />
+                  <RadioButton fx:id="decRadio" mnemonicParsing="false" onAction="#onDecRadio" text="Decryption" textAlignment="CENTER" toggleGroup="$mode" />
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" onAction="#onStart" text="Start" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+         </children>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+         </rowConstraints>
+         <opaqueInsets>
+            <Insets bottom="10.0" left="20.0" right="20.0" />
+         </opaqueInsets>
+      </GridPane>
+   </center>
+   <top>
+      <ImageView fitHeight="220.0" fitWidth="546.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="TOP_CENTER">
+         <image>
+            <Image url="@logo2.png" />
+         </image>
+      </ImageView>
+   </top>
+   <padding>
+      <Insets left="20.0" right="20.0" />
+   </padding>
+   <opaqueInsets>
+      <Insets bottom="10.0" left="20.0" right="20.0" top="1.0" />
+   </opaqueInsets>
+</BorderPane>

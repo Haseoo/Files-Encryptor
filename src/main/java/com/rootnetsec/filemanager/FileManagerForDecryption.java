@@ -1,10 +1,8 @@
 package com.rootnetsec.filemanager;
 
 import java.io.*;
-import java.util.Arrays;
 import java.nio.ByteBuffer;
 import com.rootnetsec.cryptofile.PBKDF2Hashing;
-import com.rootnetsec.cryptofile.AesCipher;
 
 public class FileManagerForDecryption extends FileManager {
     private byte[] salt,
@@ -31,10 +29,10 @@ public class FileManagerForDecryption extends FileManager {
         headerBuffer.get(salt);
 
         int tmpIVSize = headerBuffer.getInt();
-        if (tmpIVSize != AesCipher.IV_LENGTH) {
+        if (tmpIVSize != /*AesCipher.IV_LENGTH*/ 0) {
             throw new FileManagerHeaderInvalidException("IV bytes lenght invalid");
         }
-        iv = new byte[AesCipher.IV_LENGTH];
+        iv = new byte[/*AesCipher.IV_LENGTH*/0];
         headerBuffer.get(iv);
 
     }
