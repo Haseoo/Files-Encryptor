@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 public class App extends Application {
 
@@ -19,6 +20,7 @@ public class App extends Application {
         Scene scene = new Scene(root);
 
         stage.setTitle("FXML Welcome");
+        stage.getIcons().add(new Image("/icon.png"));
         stage.setScene(scene);
         stage.show();
     }

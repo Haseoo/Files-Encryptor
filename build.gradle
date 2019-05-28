@@ -8,7 +8,7 @@ sourceSets {
     main {
         resources {
             srcDirs = ["src/main/resources"]
-            includes = ["*.fxml", "logo2.png"]
+            includes = ["*.fxml", "logo2.png", "icon.png"]
         }
     }
 }

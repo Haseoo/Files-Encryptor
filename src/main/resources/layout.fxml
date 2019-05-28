@@ -46,8 +46,8 @@
                <items>
                   <FXCollections fx:factory="observableArrayList">
                      <String fx:value="AES" />
-                     <String fx:value="Fisz" />
-                     <String fx:value="Serpentyna" />
+                     <String fx:value="TwoFish" />
+                     <String fx:value="Serpent" />
                   </FXCollections>
                </items>
             </ChoiceBox>
