@@ -33,7 +33,14 @@ dependencies {
 mainClassName = 'com.rootnetsec.cryptofile.App'
 
 jar {
+    doFirst {
+        from {
+            (configurations.runtime).collect {
+                it.isDirectory() ? it : zipTree(it)
+            }
+        }
+    }
     manifest {
-        attributes 'Main-Class': 'com.rootnetsec.cryptofile.App'
+        attributes("Main-Class": "com.rootnetsec.cryptofile.App" )
     }
 }

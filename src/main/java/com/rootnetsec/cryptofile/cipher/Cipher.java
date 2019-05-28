@@ -6,10 +6,22 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import com.rootnetsec.cryptofile.cipher.javaCipher.*;
 
+import java.util.Map;
+import com.google.common.collect.ImmutableMap;
+
 abstract public class Cipher {
-    enum EncryptionType {
-        FOO
+    public enum EncryptionType {
+        AES,
+        TWOFISH,
+        SERPENT
     }
+
+    static final Map<String, EncryptionType> TYPE_PARSE_MAP = ImmutableMap.of(
+            "AES", EncryptionType.AES,
+            "TwoFish",EncryptionType.TWOFISH,
+            "Serpent", EncryptionType.SERPENT
+    );
+
     static public final short magicHeader = (short)0xDEAD;
 
     private volatile int numberOFChunks;
@@ -18,10 +30,16 @@ abstract public class Cipher {
     protected Cipher() {
         super();
     }
-    public enum CipherType {one, two, three};
 
-    public static Cipher getInstance(CipherType cipherType, long chunkSize) {
-        return null;
+    public static Cipher getInstance(EncryptionType type) {
+        Cipher retVal = null;
+        if (type == EncryptionType.AES) 
+                retVal = new AESCipher();
+        else if (type == EncryptionType.TWOFISH)
+                retVal = new Twofish();
+        else if (type == EncryptionType.SERPENT)
+                retVal = new Serpent();
+        return retVal;
     }
 
     public static Cipher getInstance(String srcFile) throws IOException, InvalidHeaderException {
@@ -44,10 +62,6 @@ abstract public class Cipher {
 
         inputStream.close();
         return retVal;
-    }
-
-    public static Cipher getInstance(EncryptionType type) {
-        return null;
     }
 
     public int getNumberOfChunks() {

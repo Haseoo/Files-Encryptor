@@ -65,7 +65,7 @@ abstract public class JavaSTDCipher extends com.rootnetsec.cryptofile.cipher.Cip
                 fileManager.writeChunk(toWrite);
             }
         } catch (Exception e) {
-            Exception th = new Exception("Encyryption error: " + e);
+            Exception th = new Exception("Encyryption error: " + e.getMessage());
             throw th;
         }
     }
