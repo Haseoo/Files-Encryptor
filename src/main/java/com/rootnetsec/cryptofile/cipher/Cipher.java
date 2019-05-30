@@ -16,7 +16,7 @@ abstract public class Cipher {
         SERPENT
     }
 
-    static final Map<String, EncryptionType> TYPE_PARSE_MAP = ImmutableMap.of(
+    static public final Map<String, EncryptionType> TYPE_PARSE_MAP = ImmutableMap.of(
             "AES", EncryptionType.AES,
             "TwoFish",EncryptionType.TWOFISH,
             "Serpent", EncryptionType.SERPENT

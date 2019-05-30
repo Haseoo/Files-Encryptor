@@ -1,12 +1,12 @@
-package com.rootnetsec.cryptofile.cipher;
+package com.rootnetsec.cryptofile;
 
+import com.rootnetsec.cryptofile.cipher.Cipher;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import com.rootnetsec.cryptofile.cipher.Cipher.EncryptionType;
-import com.rootnetsec.cryptofile.cipher.Cipher;
 
 import java.io.File;
 
@@ -29,6 +29,15 @@ public class MainController {
     private ProgressIndicator working;
     @FXML
     private Toggle encRadio;
+    @FXML
+    private Button startButton;
+
+    private static Thread cryptoThread = null;
+
+    public static boolean isCryptoThreadAlive() {
+        return (cryptoThread != null && cryptoThread.isAlive());
+    }
+
 
     @FXML
     public void inputFileBrowse() {
@@ -46,7 +55,6 @@ public class MainController {
         Window mainWindow = mainPane.getScene().getWindow();
         FileChooser fc = new FileChooser();
         fc.setTitle("Open destination file");
-        //fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Encrypted Files", "*.enc"));
         File owo = fc.showSaveDialog(mainWindow);
         if (owo != null) {
             outputFile.setText(owo.getPath());
@@ -79,33 +87,58 @@ public class MainController {
             alert.showAndWait();
             return;
         }
-        statusText.setText("Status: working");
+        statusText.setText("Status: WORKING");
         working.setVisible(true);
-        try {
-            if (workingMode == 1) {
-                Cipher.getInstance(inputFilePath).decryptFile(inputFilePath, outputFilePath, passwordText);
-            } else {
-                Cipher.getInstance(Cipher.TYPE_PARSE_MAP.get(encryptionText)).encryptFile(inputFilePath, outputFilePath, passwordText);
+        startButton.setDisable(true);
+
+        Task task = new Task<Void>() {
+            private String ExceptionString = null;
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    if (workingMode == 1) {
+                        Cipher.getInstance(inputFilePath).decryptFile(inputFilePath, outputFilePath, passwordText);
+                    } else {
+                        Cipher.getInstance(Cipher.TYPE_PARSE_MAP.get(encryptionText)).encryptFile(inputFilePath, outputFilePath, passwordText);
+                    }
+                } catch(Exception e) {
+                    ExceptionString = e.getMessage();
+                    throw new Exception();
+                }
+                startButton.setDisable(false);
+                return null;
             }
-        } catch(Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Fatal");
-            alert.setHeaderText(null);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-            statusText.setText("Status: ERROR");
-            working.setVisible(false);
-            return;
-        }
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText(null);
-            alert.setContentText("Success!");
-            alert.showAndWait();
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Success!");
+                alert.showAndWait();
 
-        statusText.setText("Status: OK");
-        working.setVisible(false);
+                statusText.setText("Status: OK");
+                working.setVisible(false);
+
+            }
+
+            @Override
+            protected void failed() {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Fatal");
+                alert.setHeaderText(null);
+                alert.setContentText(ExceptionString);
+                alert.showAndWait();
+
+                statusText.setText("Status: FAILED");
+                working.setVisible(false);
+
+            }
+        };
+        cryptoThread = new Thread(task);
+        cryptoThread.setDaemon(true);
+        cryptoThread.start();
     }
 
 
