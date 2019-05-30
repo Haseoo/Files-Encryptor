@@ -14,7 +14,7 @@ abstract public class FileManager implements AutoCloseable {
                     currentChunk, 
                     numberOfChunks;
 
-    static final long maxChunkSize = Integer.MAX_VALUE / 4;
+    static final long maxChunkSize = Runtime.getRuntime().freeMemory();
 
     static final int headerSize = 55;
     static final short magicHeader = (short)0xDEAD;

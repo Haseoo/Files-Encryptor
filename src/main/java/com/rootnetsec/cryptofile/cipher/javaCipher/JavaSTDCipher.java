@@ -1,6 +1,7 @@
 package com.rootnetsec.cryptofile.cipher.javaCipher;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.security.Security;
 
 import com.rootnetsec.cryptofile.PBKDF2Hashing;
@@ -16,12 +17,18 @@ abstract public class JavaSTDCipher extends com.rootnetsec.cryptofile.cipher.Cip
     protected final String keyString;
     protected final String transformation;
     protected final String provider;
+    protected final com.rootnetsec.cryptofile.cipher.Cipher.EncryptionType type;
     public static final int IV_LENGTH = 16;
 
-    protected JavaSTDCipher(String keyString, String transformation, String provider){
+    protected JavaSTDCipher(String keyString,
+                            String transformation,
+                            String provider,
+                            com.rootnetsec.cryptofile.cipher.Cipher.EncryptionType type ){
+
         this.keyString      = keyString;
         this.transformation = transformation;
         this.provider       = provider;
+        this.type           = type;
     }
 
     @SuppressWarnings("unused")
@@ -29,6 +36,7 @@ abstract public class JavaSTDCipher extends com.rootnetsec.cryptofile.cipher.Cip
         this.keyString      = null;
         this.transformation = null;
         this.provider       = null;
+        this.type           = null;
     }
 
     @Override
@@ -44,29 +52,33 @@ abstract public class JavaSTDCipher extends com.rootnetsec.cryptofile.cipher.Cip
 
         Security.setProperty("crypto.policy", "unlimited");
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        try (FileManagerForEncryption fileManager = new FileManagerForEncryption(srcFile, destFile, salt, iv)) {
+        try (FileManagerForEncryption fileManager = new FileManagerForEncryption(srcFile, destFile, salt, iv, type)) {
 
             final SecretKeySpec key = new SecretKeySpec(hash, keyString);
             IvParameterSpec parameters = new IvParameterSpec(iv);
 
             final Cipher cipher = Cipher.getInstance(transformation, provider);
             cipher.init(Cipher.ENCRYPT_MODE, key, parameters);
+
+            numberOfChunks = fileManager.getNumberOfChunks();
             
-            for (int i = 0; i < fileManager.getNumberOfChunks(); i++) {
+            for (int i = 0; i < numberOfChunks; i++) {
                 byte[] tmp = fileManager.getChunk();
                 if (i == fileManager.getNumberOfChunks() - 1) {
                     byte[] toWrite = cipher.doFinal(tmp);
                     fileManager.writeChunk(toWrite);
                     break;
                 }
-                //System.out.println(new String(tmp));
                 byte[] toWrite = cipher.update(tmp);
-                //System.out.println(new String(toWrite));
                 fileManager.writeChunk(toWrite);
+                setCurrentChunk(i);
             }
         } catch (Exception e) {
-            Exception th = new Exception("Encyryption error: " + e.getMessage());
+            Exception th = new Exception("Encryption error: " + e.getMessage());
             throw th;
+        }
+        finally {
+            setWorkDone();
         }
     }
 
@@ -86,7 +98,9 @@ abstract public class JavaSTDCipher extends com.rootnetsec.cryptofile.cipher.Cip
             final Cipher cipher = Cipher.getInstance(transformation, provider);
             cipher.init(Cipher.DECRYPT_MODE, key, parameters);
 
-            for (int i = 0; i < fileManager.getNumberOfChunks(); i++) {
+            numberOfChunks = fileManager.getNumberOfChunks();
+
+            for (int i = 0; i < numberOfChunks; i++) {
                 byte[] tmp = fileManager.getChunk();
                 if (i == fileManager.getNumberOfChunks() - 1) {
                     byte[] toWrite = cipher.doFinal(tmp);
@@ -96,11 +110,15 @@ abstract public class JavaSTDCipher extends com.rootnetsec.cryptofile.cipher.Cip
 
                 byte[] toWrite = cipher.update(tmp);
                 fileManager.writeChunk(toWrite);
+                setCurrentChunk(i);
             }
 
         } catch (Exception e) {
-            Exception th = new Exception("Decyryption error: " + e);
+            Exception th = new IOException("Decryption error: " + e);
             throw th;
+        }
+        finally {
+            setWorkDone();
         }
     }
 }

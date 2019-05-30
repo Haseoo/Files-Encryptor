@@ -1,20 +1,37 @@
 package com.rootnetsec.cryptofile.cipher.javaCipher.filemanager;
 
+import com.rootnetsec.cryptofile.cipher.Cipher;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 
 public class FileManagerForEncryption extends FileManager {
-    public FileManagerForEncryption(String inputPath, String outputPath, byte[] salt, byte[] iv) throws FileNotFoundException , IOException{
+    public FileManagerForEncryption(String inputPath, String outputPath, byte[] salt, byte[] iv, Cipher.EncryptionType type) throws FileNotFoundException , IOException{
         super(inputPath, outputPath);
         numberOfChunks = (int)(Math.ceil((fileSize / (double)maxChunkSize)));
-        outputStream.write(prepareHeader(salt, iv));
+        outputStream.write(prepareHeader(salt, iv, type));
     }
 
-    private byte[] prepareHeader(byte[] salt, byte[] iv) {
+    private byte[] prepareHeader(byte[] salt, byte[] iv, Cipher.EncryptionType type) {
         ByteBuffer header = ByteBuffer.allocate(headerSize);
         header.putShort(magicHeader);
 
-        header.put((byte)1);
+        byte encType = 0;
+
+
+        switch (type) {
+            case AES:
+                encType = 1;
+                break;
+            case TWOFISH:
+                encType = 2;
+                break;
+            case SERPENT:
+                encType = 3;
+                break;
+        }
+
+        header.put(encType);
 
         header.putInt(numberOfChunks);
 
@@ -33,6 +50,7 @@ public class FileManagerForEncryption extends FileManager {
         if (currentChunk > numberOfChunks) {
             throw new IndexOutOfBoundsException("Index " + currentChunk + " is out of bounds!");
         }
+        System.gc();
 
         long restOfFile = fileSize - chunkSize * currentChunk;
         chunkSize = (int)((restOfFile < maxChunkSize) ? restOfFile : maxChunkSize);

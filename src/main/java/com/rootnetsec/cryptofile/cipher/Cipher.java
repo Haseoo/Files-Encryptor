@@ -10,6 +10,8 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 abstract public class Cipher {
+
+
     public enum EncryptionType {
         AES,
         TWOFISH,
@@ -24,7 +26,8 @@ abstract public class Cipher {
 
     static public final short magicHeader = (short)0xDEAD;
 
-    private volatile int numberOFChunks;
+    protected volatile int numberOfChunks;
+    private boolean workDone = false;
                 
     private int currentChunk;    
     protected Cipher() {
@@ -33,31 +36,43 @@ abstract public class Cipher {
 
     public static Cipher getInstance(EncryptionType type) {
         Cipher retVal = null;
-        if (type == EncryptionType.AES) 
+        switch (type) {
+            case AES:
                 retVal = new AESCipher();
-        else if (type == EncryptionType.TWOFISH)
+                break;
+            case TWOFISH:
                 retVal = new Twofish();
-        else if (type == EncryptionType.SERPENT)
+                break;
+            case SERPENT:
                 retVal = new Serpent();
+                break;
+        }
         return retVal;
     }
 
-    public static Cipher getInstance(String srcFile) throws IOException, InvalidHeaderException {
+    public static Cipher getInstance(String srcFile) throws IOException {
         FileInputStream inputStream = new FileInputStream(srcFile);
         byte[] header = inputStream.readNBytes(3);
         ByteBuffer headerBuffer = ByteBuffer.wrap(header);
         short magicHeaderRead = headerBuffer.getShort();
         if (magicHeaderRead != magicHeader) {
             inputStream.close();
-            throw new InvalidHeaderException("Encypted file has invalid header");
+            throw new InvalidHeaderException("Encrypted file has invalid header");
         }
         byte type = headerBuffer.get();
-        Cipher retVal = null;
-        if (type == 1) {
-            retVal = new AESCipher();
-        } else {
-            inputStream.close();
-            throw new InvalidHeaderException("Encypted file has invalid header");
+        Cipher retVal;
+        switch (type) {
+            case 1:
+                retVal = new AESCipher();
+                break;
+            case 2:
+                retVal = new Twofish();
+                break;
+            case 3:
+                return new Serpent();
+            default:
+                inputStream.close();
+                throw new InvalidHeaderException("Encrypted file has invalid header");
         }
 
         inputStream.close();
@@ -65,7 +80,7 @@ abstract public class Cipher {
     }
 
     public int getNumberOfChunks() {
-        return numberOFChunks;
+        return numberOfChunks;
     }
 
     public synchronized int getCurrentChunk() {
@@ -74,6 +89,14 @@ abstract public class Cipher {
 
     protected synchronized void setCurrentChunk(int currentChunk) {
         this.currentChunk = currentChunk;
+    }
+
+    synchronized  public boolean isWorkDone() {
+        return workDone;
+    }
+
+    synchronized  protected void setWorkDone() {
+        this.workDone = true;
     }
 
     public abstract void decryptFile(String srcFile, String destFile, String userKey) throws Exception;

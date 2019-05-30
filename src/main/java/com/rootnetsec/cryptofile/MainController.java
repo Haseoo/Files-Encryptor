@@ -31,6 +31,8 @@ public class MainController {
     private Toggle encRadio;
     @FXML
     private Button startButton;
+    @FXML
+    private ProgressBar processProgress;
 
     private static Thread cryptoThread = null;
 
@@ -92,18 +94,47 @@ public class MainController {
         startButton.setDisable(true);
 
         Task task = new Task<Void>() {
-            private String ExceptionString = null;
+            private String exceptionString = null;
+            private boolean wasAnException = false;
+
+            private void doWork(Cipher cipher, int workingMode, String inputFilePath, String outputFilePath, String passwordText) {
+                try {
+                    if (workingMode == 1) {
+                        cipher.decryptFile(inputFilePath, outputFilePath, passwordText);
+                    } else {
+                        cipher.encryptFile(inputFilePath, outputFilePath, passwordText);
+                    }
+                } catch (Exception e) {
+                    exceptionString = e.getMessage();
+                    wasAnException = true;
+                }
+            }
             @Override
             protected Void call() throws Exception {
                 try {
+                    Cipher cipher;
                     if (workingMode == 1) {
-                        Cipher.getInstance(inputFilePath).decryptFile(inputFilePath, outputFilePath, passwordText);
+                        cipher = Cipher.getInstance(inputFilePath);
                     } else {
-                        Cipher.getInstance(Cipher.TYPE_PARSE_MAP.get(encryptionText)).encryptFile(inputFilePath, outputFilePath, passwordText);
+                        cipher = Cipher.getInstance(Cipher.TYPE_PARSE_MAP.get(encryptionText));
                     }
-                } catch(Exception e) {
-                    ExceptionString = e.getMessage();
-                    throw new Exception();
+
+                    Thread workThread = new Thread(() -> doWork(cipher, workingMode, inputFilePath, outputFilePath, passwordText));
+                    workThread.start();
+                    while (!cipher.isWorkDone()) {
+                        processProgress.setProgress(cipher.getCurrentChunk() / (double) cipher.getNumberOfChunks());
+                        Thread.sleep(10);
+                    }
+                    workThread.join();
+
+                    processProgress.setProgress(1);
+                }catch (Throwable e) {
+                    exceptionString = e.toString();
+                    e.printStackTrace();
+                    throw new Exception(e.getMessage());
+                }
+                if (wasAnException) {
+                    throw new Exception(exceptionString);
                 }
                 return null;
             }
@@ -128,7 +159,7 @@ public class MainController {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Fatal");
                 alert.setHeaderText(null);
-                alert.setContentText(ExceptionString);
+                alert.setContentText(exceptionString);
                 alert.showAndWait();
 
                 statusText.setText("Status: FAILED");
@@ -141,9 +172,5 @@ public class MainController {
         cryptoThread.setDaemon(true);
         cryptoThread.start();
     }
-
-
-
-
 
 }

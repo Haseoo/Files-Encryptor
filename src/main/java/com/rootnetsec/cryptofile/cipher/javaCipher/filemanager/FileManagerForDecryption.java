@@ -44,6 +44,7 @@ public class FileManagerForDecryption extends FileManager {
         if (currentChunk > numberOfChunks) {
             throw new IndexOutOfBoundsException("Index " + currentChunk + " is out of bounds!");
         }
+        System.gc();
         byte[] chunkSizeByte = new byte[4];
         inputStream.read(chunkSizeByte);
         ByteBuffer chunkSizeByteBuffer = ByteBuffer.wrap(chunkSizeByte);
