@@ -105,7 +105,6 @@ public class MainController {
                     ExceptionString = e.getMessage();
                     throw new Exception();
                 }
-                startButton.setDisable(false);
                 return null;
             }
 
@@ -120,6 +119,7 @@ public class MainController {
 
                 statusText.setText("Status: OK");
                 working.setVisible(false);
+                startButton.setDisable(false);
 
             }
 
@@ -133,6 +133,7 @@ public class MainController {
 
                 statusText.setText("Status: FAILED");
                 working.setVisible(false);
+                startButton.setDisable(false);
 
             }
         };
