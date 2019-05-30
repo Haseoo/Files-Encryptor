@@ -38,7 +38,7 @@ dependencies {
     compile "org.openjfx:javafx-controls:11:${platform}"
     compile "org.openjfx:javafx-fxml:11:${platform}"
 
-    implementation 'com.google.guava:guava:27.0.1-jre'
+    compile 'com.google.guava:guava:27.0.1-jre'
     testImplementation 'junit:junit:4.12'
 }
 
