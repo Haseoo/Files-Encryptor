@@ -21,26 +21,35 @@ repositories {
     jcenter()
     mavenCentral()
 }
-
+def currentOS = org.gradle.internal.os.OperatingSystem.current()
+def platform
+if (currentOS.isWindows()) {
+    platform = 'win'
+} else if (currentOS.isLinux()) {
+    platform = 'linux'
+} else if (currentOS.isMacOsX()) {
+    platform = 'mac'
+}
 dependencies {
     compile group: 'org.jetbrains.xodus', name: 'xodus-utils', version: '1.3.0'
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.61'
+    compile "org.openjfx:javafx-base:11:${platform}"
+    compile "org.openjfx:javafx-graphics:11:${platform}"
+    compile "org.openjfx:javafx-controls:11:${platform}"
+    compile "org.openjfx:javafx-fxml:11:${platform}"
 
     implementation 'com.google.guava:guava:27.0.1-jre'
     testImplementation 'junit:junit:4.12'
 }
 
-mainClassName = 'com.rootnetsec.cryptofile.App'
+mainClassName = 'com.rootnetsec.cryptofile.Main'
 
 jar {
-    doFirst {
-        from {
-            (configurations.runtime).collect {
-                it.isDirectory() ? it : zipTree(it)
-            }
-        }
-    }
     manifest {
-        attributes("Main-Class": "com.rootnetsec.cryptofile.App" )
+        attributes 'Main-Class': mainClassName
     }
+    doFirst {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } 
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA' 
 }
