@@ -5,10 +5,13 @@ import java.net.HttpURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import jetbrains.exodus.util.HexUtil;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.security.MessageDigest;
 
 public final class PasswordService {
+    private static final Logger LOGGER = Logger.getLogger(PasswordService.class.getName());
     private static String PWNED_API = "https://api.pwnedpasswords.com/range/";
 
     public static Boolean searchHaveIBeenPwnedDatabase(String password) {
@@ -34,7 +37,7 @@ public final class PasswordService {
             return result;
 
         } catch (Exception e) {
-            System.out.println(e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
             return result;
         }
     }

@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import com.rootnetsec.cryptofile.PasswordService;
 
 import java.io.File;
 
@@ -35,6 +36,15 @@ public class MainController {
     private ProgressBar processProgress;
 
     private static Thread cryptoThread = null;
+
+    private static Alert getAllert(Alert.AlertType type, String title, String text) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(text);
+        return alert;
+        
+    }
 
     public static boolean isCryptoThreadAlive() {
         return (cryptoThread != null && cryptoThread.isAlive());
@@ -82,12 +92,11 @@ public class MainController {
 
         int workingMode = ((mode.getSelectedToggle() == encRadio) ? 0 : 1);
         if (inputFilePath.isEmpty() || outputFilePath.isEmpty() || passwordText.isEmpty() || (workingMode == 0 && encryptionText == null)){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Fatal");
-            alert.setHeaderText(null);
-            alert.setContentText("You haven't enter necessary information!");
-            alert.showAndWait();
+            getAllert(Alert.AlertType.ERROR, "Fatal", "You haven't enter necessary information!").showAndWait();
             return;
+        }
+        if (workingMode == 0 && PasswordService.searchHaveIBeenPwnedDatabase(passwordText)) {
+            getAllert(Alert.AlertType.WARNING, "Password", "Your password is weak!").showAndWait();
         }
         statusText.setText("Status: WORKING");
         working.setVisible(true);
@@ -120,6 +129,7 @@ public class MainController {
                     }
 
                     Thread workThread = new Thread(() -> doWork(cipher, workingMode, inputFilePath, outputFilePath, passwordText));
+                    workThread.setDaemon(true);
                     workThread.start();
                     while (!cipher.isWorkDone()) {
                         processProgress.setProgress(cipher.getCurrentChunk() / (double) cipher.getNumberOfChunks());
@@ -130,7 +140,7 @@ public class MainController {
                     processProgress.setProgress(1);
                 }catch (Throwable e) {
                     exceptionString = e.toString();
-                    e.printStackTrace();
+                   //TODO LOGGER e.printStackTrace();
                     throw new Exception(e.getMessage());
                 }
                 if (wasAnException) {
@@ -142,11 +152,7 @@ public class MainController {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Success");
-                alert.setHeaderText(null);
-                alert.setContentText("Success!");
-                alert.showAndWait();
+                getAllert(Alert.AlertType.INFORMATION, "Success", "Success!").showAndWait();
 
                 statusText.setText("Status: OK");
                 working.setVisible(false);
@@ -156,11 +162,7 @@ public class MainController {
 
             @Override
             protected void failed() {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Fatal");
-                alert.setHeaderText(null);
-                alert.setContentText(exceptionString);
-                alert.showAndWait();
+                getAllert(Alert.AlertType.ERROR, "Fatal", exceptionString).showAndWait();
 
                 statusText.setText("Status: FAILED");
                 working.setVisible(false);
