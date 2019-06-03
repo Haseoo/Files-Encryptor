@@ -7,7 +7,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import com.rootnetsec.cryptofile.PasswordService;
 
 import java.io.File;
 
@@ -37,7 +36,7 @@ public class MainController {
 
     private static Thread cryptoThread = null;
 
-    private static Alert getAllert(Alert.AlertType type, String title, String text) {
+    private static Alert getAlert(Alert.AlertType type, String title, String text) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -92,11 +91,17 @@ public class MainController {
 
         int workingMode = ((mode.getSelectedToggle() == encRadio) ? 0 : 1);
         if (inputFilePath.isEmpty() || outputFilePath.isEmpty() || passwordText.isEmpty() || (workingMode == 0 && encryptionText == null)){
-            getAllert(Alert.AlertType.ERROR, "Fatal", "You haven't enter necessary information!").showAndWait();
+            getAlert(Alert.AlertType.ERROR, "Fatal", "You haven't enter necessary information!").showAndWait();
             return;
         }
         if (workingMode == 0 && PasswordService.searchHaveIBeenPwnedDatabase(passwordText)) {
-            getAllert(Alert.AlertType.WARNING, "Password", "Your password is weak!").showAndWait();
+            YesNoAlert alert = new YesNoAlert("Password",
+                    "Your password is weak!\nContinue?",
+                    Alert.AlertType.WARNING);
+            alert.showAndWait();
+            if (!alert.answerWasYes()) {
+                return;
+            }
         }
         statusText.setText("Status: WORKING");
         working.setVisible(true);
@@ -152,7 +157,7 @@ public class MainController {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                getAllert(Alert.AlertType.INFORMATION, "Success", "Success!").showAndWait();
+                getAlert(Alert.AlertType.INFORMATION, "Success", "Success!").showAndWait();
 
                 statusText.setText("Status: OK");
                 working.setVisible(false);
@@ -162,7 +167,7 @@ public class MainController {
 
             @Override
             protected void failed() {
-                getAllert(Alert.AlertType.ERROR, "Fatal", exceptionString).showAndWait();
+                getAlert(Alert.AlertType.ERROR, "Fatal", exceptionString).showAndWait();
 
                 statusText.setText("Status: FAILED");
                 working.setVisible(false);

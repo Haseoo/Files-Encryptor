@@ -10,10 +10,17 @@ import java.util.logging.Logger;
 
 import java.security.MessageDigest;
 
+/**
+ * Checks the password strength with pwnedpasswords API
+ */
 public final class PasswordService {
-    private static final Logger LOGGER = Logger.getLogger(PasswordService.class.getName());
-    private static String PWNED_API = "https://api.pwnedpasswords.com/range/";
+    private static final Logger LOGGER = Logger.getLogger(PasswordService.class.getName()); /**Logger used to monitor connection problems*/
+    private static String PWNED_API = "https://api.pwnedpasswords.com/range/"; /**The api URL*/
 
+    /** Method that check password strength
+     * @param password The password to check.
+     * @return  Method returns true if given password is weak
+     */
     public static Boolean searchHaveIBeenPwnedDatabase(String password) {
         Boolean result = false;
         try {

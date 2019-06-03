@@ -36,13 +36,13 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Source file " GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Destination " GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password " GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Encryption type" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
             <Button mnemonicParsing="false" onAction="#inputFileBrowse" text="Browse" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
             <Button mnemonicParsing="false" onAction="#outputFileBrowse" text="Browse" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <TextField fx:id="inputFile" alignment="CENTER_LEFT" editable="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
             <TextField fx:id="outputFile" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <PasswordField fx:id="password" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mode" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm " GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
             <ChoiceBox fx:id="encryptionType" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER">
                <items>
                   <FXCollections fx:factory="observableArrayList">
