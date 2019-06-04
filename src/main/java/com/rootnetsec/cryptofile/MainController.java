@@ -111,7 +111,7 @@ public class MainController {
         if (!inputFile.getText().equals("")) {
             File file = new File(inputFile.getText());
             if (file.exists()) {
-                File dir = ((file.isAbsolute()) ? file.getParentFile() : file);
+                File dir = ((file.isAbsolute() && !file.isDirectory()) ? file.getParentFile() : file);
                 fileChooser.setInitialDirectory(dir);
             }
         }
@@ -129,11 +129,10 @@ public class MainController {
         Window mainWindow = mainPane.getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open destination file");
-        fileChooser.setInitialFileName("*.enc");
         if (!outputFile.getText().equals("")) {
             File file = new File(outputFile.getText());
             if (file.exists()) {
-                if  (file.isAbsolute()) {
+                if  (file.isAbsolute() && !file.isDirectory()) {
                     fileChooser.setInitialFileName(file.getName());
                     fileChooser.setInitialDirectory(file.getParentFile());
                 }

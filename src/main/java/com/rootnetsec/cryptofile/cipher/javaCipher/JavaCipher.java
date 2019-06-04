@@ -6,6 +6,7 @@ import java.security.Security;
 
 import com.rootnetsec.cryptofile.PBKDF2Hashing;
 import com.rootnetsec.cryptofile.RandomBytesGenerator;
+import com.rootnetsec.cryptofile.cipher.filemanager.FileManager;
 import com.rootnetsec.cryptofile.cipher.filemanager.FileManagerForDecryption;
 import com.rootnetsec.cryptofile.cipher.filemanager.FileManagerForEncryption;
 import javax.crypto.spec.IvParameterSpec;
@@ -39,6 +40,20 @@ abstract public class JavaCipher extends com.rootnetsec.cryptofile.cipher.Cipher
         this.type           = null;
     }
 
+    private void iterate(FileManager fileManager, Cipher cipher) throws Exception{
+        for (int i = 0; i < numberOfChunks; i++) {
+            byte[] tmp = fileManager.getChunk();
+            if (i == fileManager.getNumberOfChunks() - 1) {
+                byte[] toWrite = cipher.doFinal(tmp);
+                fileManager.writeChunk(toWrite);
+                break;
+            }
+            byte[] toWrite = cipher.update(tmp);
+            fileManager.writeChunk(toWrite);
+            setCurrentChunk(i);
+        }
+    }
+
     @Override
     public void encryptFile(String srcFile, String destFile, String userKey) throws Exception {
         ByteBuffer hashBuffer = ByteBuffer.wrap(PBKDF2Hashing.hash(userKey));
@@ -61,18 +76,9 @@ abstract public class JavaCipher extends com.rootnetsec.cryptofile.cipher.Cipher
             cipher.init(Cipher.ENCRYPT_MODE, key, parameters);
 
             numberOfChunks = fileManager.getNumberOfChunks();
-            
-            for (int i = 0; i < numberOfChunks; i++) {
-                byte[] tmp = fileManager.getChunk();
-                if (i == fileManager.getNumberOfChunks() - 1) {
-                    byte[] toWrite = cipher.doFinal(tmp);
-                    fileManager.writeChunk(toWrite);
-                    break;
-                }
-                byte[] toWrite = cipher.update(tmp);
-                fileManager.writeChunk(toWrite);
-                setCurrentChunk(i);
-            }
+
+            iterate(fileManager, cipher);
+
         } catch (Exception e) {
             Exception th = new Exception("Encryption error: " + e.getMessage());
             throw th;
@@ -100,18 +106,7 @@ abstract public class JavaCipher extends com.rootnetsec.cryptofile.cipher.Cipher
 
             numberOfChunks = fileManager.getNumberOfChunks();
 
-            for (int i = 0; i < numberOfChunks; i++) {
-                byte[] tmp = fileManager.getChunk();
-                if (i == fileManager.getNumberOfChunks() - 1) {
-                    byte[] toWrite = cipher.doFinal(tmp);
-                    fileManager.writeChunk(toWrite);
-                    break;
-                }
-
-                byte[] toWrite = cipher.update(tmp);
-                fileManager.writeChunk(toWrite);
-                setCurrentChunk(i);
-            }
+            iterate(fileManager, cipher);
 
         } catch (Exception e) {
             Exception th = new IOException("Decryption error: " + e);
