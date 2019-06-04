@@ -11,15 +11,15 @@ import java.util.logging.Logger;
 import java.security.MessageDigest;
 
 /**
- * Checks the password strength with pwnedpasswords API
+ * Checks whether the password is in the HaveIBeenPwned database.
  */
 public final class PasswordService {
     private static final Logger LOGGER = Logger.getLogger(PasswordService.class.getName()); /**Logger used to monitor connection problems*/
     private static String PWNED_API = "https://api.pwnedpasswords.com/range/"; /**The api URL*/
 
-    /** Method that check password strength
+    /** Method that checks if a hash prefix of the password is in the database.
      * @param password The password to check.
-     * @return  Method returns true if given password is weak
+     * @return  Method returns true if given password is found.
      */
     public static Boolean searchHaveIBeenPwnedDatabase(String password) {
         Boolean result = false;
@@ -29,7 +29,7 @@ public final class PasswordService {
             String hash = HexUtil.byteArrayToString(digestedPassword).toUpperCase();
             String hashPrefix = hash.substring(0, 5);
             String hashSuffix = hash.substring(5);
-            
+
             URL url = new URL(PWNED_API + hashPrefix);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");

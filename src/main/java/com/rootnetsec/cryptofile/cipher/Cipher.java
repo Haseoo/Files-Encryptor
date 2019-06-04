@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import java.nio.ByteBuffer;
+
+import com.rootnetsec.cryptofile.cipher.filemanager.FileManager;
 import com.rootnetsec.cryptofile.cipher.javaCipher.*;
 
 import java.util.Map;
@@ -24,8 +26,6 @@ abstract public class Cipher {
             "Serpent", EncryptionType.SERPENT
     );
 
-    static public final short magicHeader = (short)0xDEAD;
-
     protected volatile int numberOfChunks;
     private boolean workDone = false;
                 
@@ -41,10 +41,10 @@ abstract public class Cipher {
                 retVal = new AESCipher();
                 break;
             case TWOFISH:
-                retVal = new Twofish();
+                retVal = new TwofishCipher();
                 break;
             case SERPENT:
-                retVal = new Serpent();
+                retVal = new SerpentCipher();
                 break;
         }
         return retVal;
@@ -52,10 +52,10 @@ abstract public class Cipher {
 
     public static Cipher getInstance(String srcFile) throws IOException {
         FileInputStream inputStream = new FileInputStream(srcFile);
-        byte[] header = inputStream.readNBytes(3);
+        byte[] header = inputStream.readNBytes(FileManager.SHORT_HEADER_SIZE);
         ByteBuffer headerBuffer = ByteBuffer.wrap(header);
         short magicHeaderRead = headerBuffer.getShort();
-        if (magicHeaderRead != magicHeader) {
+        if (magicHeaderRead != FileManager.MAGIC_HEADER) {
             inputStream.close();
             throw new InvalidHeaderException("Encrypted file has invalid header");
         }
@@ -66,10 +66,10 @@ abstract public class Cipher {
                 retVal = new AESCipher();
                 break;
             case 2:
-                retVal = new Twofish();
+                retVal = new TwofishCipher();
                 break;
             case 3:
-                return new Serpent();
+                return new SerpentCipher();
             default:
                 inputStream.close();
                 throw new InvalidHeaderException("Encrypted file has invalid header");

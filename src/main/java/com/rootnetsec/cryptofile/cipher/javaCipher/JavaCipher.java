@@ -6,24 +6,24 @@ import java.security.Security;
 
 import com.rootnetsec.cryptofile.PBKDF2Hashing;
 import com.rootnetsec.cryptofile.RandomBytesGenerator;
-import com.rootnetsec.cryptofile.cipher.javaCipher.filemanager.FileManagerForDecryption;
-import com.rootnetsec.cryptofile.cipher.javaCipher.filemanager.FileManagerForEncryption;
+import com.rootnetsec.cryptofile.cipher.filemanager.FileManagerForDecryption;
+import com.rootnetsec.cryptofile.cipher.filemanager.FileManagerForEncryption;
 import javax.crypto.spec.IvParameterSpec;
 
 import javax.crypto.Cipher;
 import java.nio.ByteBuffer;
 
-abstract public class JavaSTDCipher extends com.rootnetsec.cryptofile.cipher.Cipher {
+abstract public class JavaCipher extends com.rootnetsec.cryptofile.cipher.Cipher {
     protected final String keyString;
     protected final String transformation;
     protected final String provider;
     protected final com.rootnetsec.cryptofile.cipher.Cipher.EncryptionType type;
     public static final int IV_LENGTH = 16;
 
-    protected JavaSTDCipher(String keyString,
-                            String transformation,
-                            String provider,
-                            com.rootnetsec.cryptofile.cipher.Cipher.EncryptionType type ){
+    protected JavaCipher(String keyString,
+                         String transformation,
+                         String provider,
+                         com.rootnetsec.cryptofile.cipher.Cipher.EncryptionType type ){
 
         this.keyString      = keyString;
         this.transformation = transformation;
@@ -32,7 +32,7 @@ abstract public class JavaSTDCipher extends com.rootnetsec.cryptofile.cipher.Cip
     }
 
     @SuppressWarnings("unused")
-    private JavaSTDCipher() {
+    private JavaCipher() {
         this.keyString      = null;
         this.transformation = null;
         this.provider       = null;

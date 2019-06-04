@@ -9,85 +9,170 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.nio.file.Files;
 
+/**
+ * Main controller of the application window
+ */
 public class MainController {
+    /**
+     * The field that holds input file path
+     */
     @FXML
     private TextField inputFile;
+    /**
+     * The field that holds output file path
+     */
     @FXML
     private TextField outputFile;
+    /**
+     * The choicebox group that allows the user to choose an encryption algorithm
+     */
     @FXML
-    private ChoiceBox encryptionType;
+    private ChoiceBox encryptionAlgorithm;
+    /**
+     * The main pane of the application window.
+     */
     @FXML
     private BorderPane mainPane;
     @FXML
+    /**
+     * The checkbox group that allows the user to choose whether to encrypt or decrypt a file
+     */
     private ToggleGroup mode;
+    /**
+     * The field that holds user's password
+     */
     @FXML
     private PasswordField password;
+    /**
+     * The text label that displays information about the application current state
+     */
     @FXML
     private Label statusText;
+    /**
+     * Indicates whether the application is encrypting or decrypting a file
+     */
     @FXML
     private ProgressIndicator working;
+    /**
+     * The radio button that indicates encryption mode
+     */
     @FXML
     private Toggle encRadio;
+    /**
+     * The button that starts an encryption or decryption process
+     */
     @FXML
     private Button startButton;
+    /**
+     * The bar that displays the progress
+     */
     @FXML
     private ProgressBar processProgress;
 
+    /**
+     * The thread object that creates a daemon thread for encrypting or decrypting
+     */
     private static Thread cryptoThread = null;
 
+
+    /** Check whether the encryption/decryption process is currently running
+     * @return Returns true if the encryption/decryption process is currently running otherwise returns false
+     */
+    public static boolean isCryptoThreadAlive() {
+        return (cryptoThread != null && cryptoThread.isAlive());
+    }
+
+    /** Creates a JavaFX alert dialog object
+     * @param type The type of dialog alert
+     * @param title The title of the alert dialog
+     * @param text The text that will be displayed in the dialog
+     * @return
+     */
     private static Alert getAlert(Alert.AlertType type, String title, String text) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(text);
         return alert;
-        
-    }
 
-    public static boolean isCryptoThreadAlive() {
-        return (cryptoThread != null && cryptoThread.isAlive());
     }
 
 
+    /**
+     * Opens the file chooser dialog after clicking on the browse button
+     */
     @FXML
     public void inputFileBrowse() {
         Window mainWindow = mainPane.getScene().getWindow();
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Open source file");
-        File owo = fc.showOpenDialog(mainWindow);
-        if (owo != null) {
-            inputFile.setText(owo.getPath());
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open source file");
+        if (!inputFile.getText().equals("")) {
+            File file = new File(inputFile.getText());
+            if (file.exists()) {
+                File dir = ((file.isAbsolute()) ? file.getParentFile() : file);
+                fileChooser.setInitialDirectory(dir);
+            }
+        }
+        File file = fileChooser.showOpenDialog(mainWindow);
+        if (file != null) {
+            inputFile.setText(file.getPath());
         }
     }
 
+    /**
+     * Opens the file chooser dialog after clicking on the browse button
+     */
     @FXML
     public void outputFileBrowse() {
         Window mainWindow = mainPane.getScene().getWindow();
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Open destination file");
-        File owo = fc.showSaveDialog(mainWindow);
-        if (owo != null) {
-            outputFile.setText(owo.getPath());
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open destination file");
+        fileChooser.setInitialFileName("*.enc");
+        if (!outputFile.getText().equals("")) {
+            File file = new File(outputFile.getText());
+            if (file.exists()) {
+                if  (file.isAbsolute()) {
+                    fileChooser.setInitialFileName(file.getName());
+                    fileChooser.setInitialDirectory(file.getParentFile());
+                }
+                else if (file.isDirectory()) {
+                    fileChooser.setInitialDirectory(file);
+                }
+            }
+        }
+        File file = fileChooser.showSaveDialog(mainWindow);
+        if (file != null) {
+            outputFile.setText(file.getPath());
         }
     }
 
+    /**
+     * Unsets disable flag on the encryption algorithm choicebox on clicking the encryption mode radiobutton
+     */
     @FXML
     public void onEncRadio() {
-        encryptionType.setDisable(false);
+        encryptionAlgorithm.setDisable(false);
     }
 
+    /**
+     * Sets disable flag on the encryption algorithm choicebox on clicking the decryption mode radiobutton
+     */
     @FXML
     public void onDecRadio() {
-        encryptionType.setDisable(true);
+        encryptionAlgorithm.setDisable(true);
     }
 
+    /**
+     * Starts the encryption/decryption process on clicking the start button
+     */
     @FXML
     public void onStart() {
         String inputFilePath  = inputFile.getText(),
                outputFilePath = outputFile.getText(),
                passwordText   = password.getText(),
-               encryptionText  = ((encryptionType.getValue() == null)? null : encryptionType.getValue().toString());
+               encryptionText  = ((encryptionAlgorithm.getValue() == null)? null : encryptionAlgorithm.getValue().toString());
 
         int workingMode = ((mode.getSelectedToggle() == encRadio) ? 0 : 1);
         if (inputFilePath.isEmpty() || outputFilePath.isEmpty() || passwordText.isEmpty() || (workingMode == 0 && encryptionText == null)){
@@ -120,6 +205,7 @@ public class MainController {
                     }
                 } catch (Exception e) {
                     exceptionString = e.getMessage();
+                    e.printStackTrace();
                     wasAnException = true;
                 }
             }

@@ -1,9 +1,7 @@
 package com.rootnetsec.cryptofile.cipher.javaCipher;
 
-import com.rootnetsec.cryptofile.cipher.javaCipher.JavaSTDCipher;
-
-public final class Twofish extends JavaSTDCipher {
-    public Twofish(){
+public final class TwofishCipher extends JavaCipher {
+    public TwofishCipher(){
         super("TWOFISH", "TWOFISH/CBC/PKCS7Padding", "BC", EncryptionType.TWOFISH);
     }
 

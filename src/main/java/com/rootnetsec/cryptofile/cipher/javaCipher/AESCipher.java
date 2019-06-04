@@ -1,8 +1,6 @@
 package com.rootnetsec.cryptofile.cipher.javaCipher;
-import com.rootnetsec.cryptofile.cipher.Cipher;
-import com.rootnetsec.cryptofile.cipher.javaCipher.JavaSTDCipher;
 
-public final class AESCipher extends JavaSTDCipher {
+public final class AESCipher extends JavaCipher {
     public AESCipher() {
         super("AES", "AES/CBC/PKCS5PADDING", "BC", EncryptionType.AES);
 

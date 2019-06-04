@@ -1,4 +1,4 @@
-package com.rootnetsec.cryptofile.cipher.javaCipher.filemanager;
+package com.rootnetsec.cryptofile.cipher.filemanager;
 
 import java.io.IOException;
 

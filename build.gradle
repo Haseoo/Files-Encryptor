@@ -1,6 +1,8 @@
 plugins {
     id 'java'
     id 'application'
+    id 'maven'
+    id 'idea'
     id 'org.openjfx.javafxplugin' version '0.0.7'
 }
 
@@ -9,6 +11,12 @@ sourceSets {
         resources {
             srcDirs = ["src/main/resources"]
             includes = ["*.fxml", "logo2.png", "icon.png"]
+        }
+    }
+    test {
+        resources {
+            srcDirs = ["src/test/resources"]
+            includes = ["*.enc"]
         }
     }
 }
@@ -58,4 +66,20 @@ apply plugin: 'java'
 javadoc {
     source = sourceSets.main.allJava
     classpath = configurations.compile
+}
+task createPom {
+    pom {
+        project {
+            groupId 'com.rootsecnet'
+            version '1.0.0-SNAPSHOT'
+
+            inceptionYear '2019'
+            licenses {
+                license {
+                    name 'GNU General Public License v3.0'
+                    url 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+                }
+            }
+        }
+    }.writeTo("pom.xml")
 }

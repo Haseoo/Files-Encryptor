@@ -43,7 +43,7 @@
             <TextField fx:id="outputFile" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <PasswordField fx:id="password" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm " GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
-            <ChoiceBox fx:id="encryptionType" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER">
+            <ChoiceBox fx:id="encryptionAlgorithm" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER">
                <items>
                   <FXCollections fx:factory="observableArrayList">
                      <String fx:value="AES" />

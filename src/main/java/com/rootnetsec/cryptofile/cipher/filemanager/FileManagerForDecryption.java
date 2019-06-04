@@ -1,23 +1,40 @@
-package com.rootnetsec.filemanager;
+package com.rootnetsec.cryptofile.cipher.filemanager;
 
 import java.io.*;
 import java.nio.ByteBuffer;
 import com.rootnetsec.cryptofile.PBKDF2Hashing;
+import com.rootnetsec.cryptofile.cipher.javaCipher.JavaCipher;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class FileManagerForDecryption extends FileManager {
     private byte[] salt,
                    iv;
 
-    public FileManagerForDecryption(String inputPath, String outputPath) throws FileNotFoundException, IOException, FileManagerHeaderInvalidException {
+    public FileManagerForDecryption(String inputPath, String outputPath) throws Exception {
         super(inputPath, outputPath);
-        byte[] header = new byte[headerSize];
-        inputStream.read(header, 0, headerSize);
-        ByteBuffer headerBuffer = ByteBuffer.wrap(header);
+
+        final int LONG_HEADER_SIZE;
+
+        byte[] shortHeader = new byte[SHORT_HEADER_SIZE];
+        inputStream.read(shortHeader, 0, SHORT_HEADER_SIZE);
+        ByteBuffer shortHeaderBuffer = ByteBuffer.wrap(shortHeader);
         
-        short tmpMagicHeader = headerBuffer.getShort();
-        if (tmpMagicHeader != magicHeader) {
+        short tmpMagicHeader = shortHeaderBuffer.getShort();
+        if (tmpMagicHeader != MAGIC_HEADER) {
             throw new FileManagerHeaderInvalidException("Magic header invalid");
         }
+
+        shortHeaderBuffer.position(shortHeaderBuffer.position() + Byte.BYTES);
+
+        LONG_HEADER_SIZE = shortHeaderBuffer.getInt();
+        byte[] longHeaderEncrypted = new byte[LONG_HEADER_SIZE];
+
+        inputStream.read(longHeaderEncrypted, 0, LONG_HEADER_SIZE);
+
+        ByteBuffer headerBuffer = ByteBuffer.wrap(decryptHeader(longHeaderEncrypted));
 
         numberOfChunks = headerBuffer.getInt();
 
@@ -29,10 +46,10 @@ public class FileManagerForDecryption extends FileManager {
         headerBuffer.get(salt);
 
         int tmpIVSize = headerBuffer.getInt();
-        if (tmpIVSize != /*AesCipher.IV_LENGTH*/ 0) {
+        if (tmpIVSize != JavaCipher.IV_LENGTH) {
             throw new FileManagerHeaderInvalidException("IV bytes lenght invalid");
         }
-        iv = new byte[/*AesCipher.IV_LENGTH*/0];
+        iv = new byte[JavaCipher.IV_LENGTH];
         headerBuffer.get(iv);
 
     }
@@ -41,6 +58,7 @@ public class FileManagerForDecryption extends FileManager {
         if (currentChunk > numberOfChunks) {
             throw new IndexOutOfBoundsException("Index " + currentChunk + " is out of bounds!");
         }
+        System.gc();
         byte[] chunkSizeByte = new byte[4];
         inputStream.read(chunkSizeByte);
         ByteBuffer chunkSizeByteBuffer = ByteBuffer.wrap(chunkSizeByte);
@@ -49,6 +67,17 @@ public class FileManagerForDecryption extends FileManager {
         inputStream.read(chunk, 0, chunkSize);
         currentChunk++;
         return chunk;
+    }
+
+    private byte[] decryptHeader(byte[] header) throws Exception {
+
+        final SecretKeySpec key = new SecretKeySpec(HASH, "AES");
+        IvParameterSpec parameters = new IvParameterSpec(IV);
+        final javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES/CBC/PKCS5PADDING");
+        cipher.init(Cipher.DECRYPT_MODE, key, parameters);
+
+        return cipher.doFinal(header);
+
     }
 
     public void writeChunk(byte[] data) throws IOException {

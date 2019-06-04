@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
 
+//TODO KAROL WEŹ ZRoB DO TEGO DOUMNETACJE I TESTY!!!!!!!!!!!!!!!!!!!!!!
+
 public final class PBKDF2Hashing {
     public static final int SALT_BYTES              = 24;
     private static final String PBKDF2_ALGORITHM    = "PBKDF2WithHmacSHA1";
