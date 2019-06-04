@@ -57,7 +57,7 @@ public class FileManagerForEncryption extends FileManager {
     }
 
     public byte[] getChunk() throws IOException {
-        if (currentChunk > numberOfChunks) {
+        if (currentChunk >= numberOfChunks) {
             throw new IndexOutOfBoundsException("Index " + currentChunk + " is out of bounds!");
         }
         System.gc();
@@ -84,9 +84,7 @@ public class FileManagerForEncryption extends FileManager {
         IvParameterSpec parameters = new IvParameterSpec(IV);
         final javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES/CBC/PKCS5PADDING");
         cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, key, parameters);
-        byte[] tmp = cipher.doFinal(header);
-
-        return tmp;
+        return cipher.doFinal(header);
 
         }
 

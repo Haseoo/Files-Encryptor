@@ -24,6 +24,8 @@ public class FileManagerForDecryption extends FileManager {
         
         short tmpMagicHeader = shortHeaderBuffer.getShort();
         if (tmpMagicHeader != MAGIC_HEADER) {
+            inputStream.close();
+            outputStream.close();
             throw new FileManagerHeaderInvalidException("Magic header invalid");
         }
 
@@ -40,14 +42,18 @@ public class FileManagerForDecryption extends FileManager {
 
         int tmpSaltSize = headerBuffer.getInt();
         if (tmpSaltSize != PBKDF2Hashing.SALT_BYTES) {
-            throw new FileManagerHeaderInvalidException("Salt bytes lenght invalid");
+            inputStream.close();
+            outputStream.close();
+            throw new FileManagerHeaderInvalidException("Salt bytes length invalid");
         }
         salt = new byte[PBKDF2Hashing.SALT_BYTES];
         headerBuffer.get(salt);
 
         int tmpIVSize = headerBuffer.getInt();
         if (tmpIVSize != JavaCipher.IV_LENGTH) {
-            throw new FileManagerHeaderInvalidException("IV bytes lenght invalid");
+            inputStream.close();
+            outputStream.close();
+            throw new FileManagerHeaderInvalidException("IV bytes length invalid");
         }
         iv = new byte[JavaCipher.IV_LENGTH];
         headerBuffer.get(iv);
@@ -55,7 +61,7 @@ public class FileManagerForDecryption extends FileManager {
     }
 
     public byte[] getChunk() throws IOException {
-        if (currentChunk > numberOfChunks) {
+        if (currentChunk >= numberOfChunks) {
             throw new IndexOutOfBoundsException("Index " + currentChunk + " is out of bounds!");
         }
         System.gc();
