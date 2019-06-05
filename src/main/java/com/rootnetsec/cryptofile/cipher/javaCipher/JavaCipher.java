@@ -2,6 +2,8 @@ package com.rootnetsec.cryptofile.cipher.javaCipher;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 
 import com.rootnetsec.cryptofile.PBKDF2Hashing;
@@ -13,6 +15,7 @@ import javax.crypto.spec.IvParameterSpec;
 
 import javax.crypto.Cipher;
 import java.nio.ByteBuffer;
+import java.security.spec.InvalidKeySpecException;
 
 abstract public class JavaCipher extends com.rootnetsec.cryptofile.cipher.Cipher {
     protected final String keyString;
@@ -40,7 +43,7 @@ abstract public class JavaCipher extends com.rootnetsec.cryptofile.cipher.Cipher
         this.type           = null;
     }
 
-    private void iterate(FileManager fileManager, Cipher cipher) throws Exception{
+    private void iterate(FileManager fileManager, Cipher cipher) throws IOException, GeneralSecurityException{
         for (int i = 0; i < numberOfChunks; i++) {
             byte[] tmp = fileManager.getChunk();
             if (i == fileManager.getNumberOfChunks() - 1) {
@@ -55,7 +58,7 @@ abstract public class JavaCipher extends com.rootnetsec.cryptofile.cipher.Cipher
     }
 
     @Override
-    public void encryptFile(String srcFile, String destFile, String userKey) throws Exception {
+    public void encryptFile(String srcFile, String destFile, String userKey) throws GeneralSecurityException {
         ByteBuffer hashBuffer = ByteBuffer.wrap(PBKDF2Hashing.hash(userKey));
         int saltLength = hashBuffer.getInt();
         byte[] salt = new byte[saltLength];
@@ -80,7 +83,7 @@ abstract public class JavaCipher extends com.rootnetsec.cryptofile.cipher.Cipher
             iterate(fileManager, cipher);
 
         } catch (Exception e) {
-            Exception th = new Exception("Encryption error: " + e.getMessage());
+            EncryptionError th = new EncryptionError(e.getMessage());
             throw th;
         }
         finally {
@@ -88,7 +91,7 @@ abstract public class JavaCipher extends com.rootnetsec.cryptofile.cipher.Cipher
         }
     }
 
-    public void decryptFile(String srcFile, String destFile, String userKey) throws Exception {
+    public void decryptFile(String srcFile, String destFile, String userKey) throws DecryptionError {
         try (FileManagerForDecryption fileManager = new FileManagerForDecryption(srcFile, destFile)) {
 
             byte[] salt = fileManager.getSalt();
@@ -109,7 +112,7 @@ abstract public class JavaCipher extends com.rootnetsec.cryptofile.cipher.Cipher
             iterate(fileManager, cipher);
 
         } catch (Exception e) {
-            Exception th = new IOException("Decryption error: " + e);
+            DecryptionError th = new DecryptionError(e.getMessage());
             throw th;
         }
         finally {

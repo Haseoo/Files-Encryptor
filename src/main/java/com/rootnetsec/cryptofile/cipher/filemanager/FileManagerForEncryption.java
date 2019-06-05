@@ -6,15 +6,16 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.security.GeneralSecurityException;
 
 public class FileManagerForEncryption extends FileManager {
-    public FileManagerForEncryption(String inputPath, String outputPath, byte[] salt, byte[] iv, Cipher.EncryptionType type) throws Exception{
+    public FileManagerForEncryption(String inputPath, String outputPath, byte[] salt, byte[] iv, Cipher.EncryptionType type) throws GeneralSecurityException, IOException {
         super(inputPath, outputPath);
         numberOfChunks = (int)(Math.ceil((fileSize / (double) MAX_CHUNK_SIZE)));
         outputStream.write(prepareHeader(salt, iv, type));
     }
 
-    private byte[] prepareHeader(byte[] salt, byte[] iv, Cipher.EncryptionType type) throws Exception {
+    private byte[] prepareHeader(byte[] salt, byte[] iv, Cipher.EncryptionType type) throws GeneralSecurityException {
         final int HEADER_SIZE;
         final int LONG_HEADER_SIZE;
         final int LONG_ENCRYPTED_HEADER_SIZE;
@@ -77,7 +78,7 @@ public class FileManagerForEncryption extends FileManager {
         outputStream.write(data);
     }
 
-    private byte[] encryptHeader(byte[] header) throws Exception {
+    private byte[] encryptHeader(byte[] header) throws GeneralSecurityException {
 
 
         final SecretKeySpec key = new SecretKeySpec(HASH, "AES");

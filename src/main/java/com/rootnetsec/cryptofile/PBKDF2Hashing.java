@@ -1,6 +1,9 @@
 package com.rootnetsec.cryptofile;
 
 import java.nio.ByteBuffer;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
 
@@ -12,7 +15,7 @@ public final class PBKDF2Hashing {
     private static final int HASH_BYTES             = 32;
     private static final int HASH_ITERATIONS        = 10000;
 
-    public static byte[] hash(String data) throws Exception {
+    public static byte[] hash(String data) throws NoSuchAlgorithmException, InvalidKeySpecException {
         char[] char_data = data.toCharArray();
         byte[] salt = RandomBytesGenerator.generate(SALT_BYTES);
         PBEKeySpec key = new PBEKeySpec(char_data, salt, HASH_ITERATIONS, HASH_BYTES * 8);
@@ -28,7 +31,7 @@ public final class PBKDF2Hashing {
 
     }
 
-    public static byte[] hash(String data, byte[] salt) throws Exception {
+    public static byte[] hash(String data, byte[] salt) throws GeneralSecurityException {
         char[] char_data = data.toCharArray();
         PBEKeySpec key = new PBEKeySpec(char_data, salt, HASH_ITERATIONS, HASH_BYTES * 8);
         SecretKeyFactory secretKey = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");

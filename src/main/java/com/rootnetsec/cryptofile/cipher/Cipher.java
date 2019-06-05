@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import com.rootnetsec.cryptofile.cipher.filemanager.FileManager;
 import com.rootnetsec.cryptofile.cipher.javaCipher.*;
 
+import java.security.GeneralSecurityException;
 import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
@@ -99,6 +100,6 @@ abstract public class Cipher {
         this.workDone = true;
     }
 
-    public abstract void decryptFile(String srcFile, String destFile, String userKey) throws Exception;
-    public abstract void encryptFile(String srcFile, String destFile, String userKey) throws Exception; 
+    public abstract void decryptFile(String srcFile, String destFile, String userKey) throws GeneralSecurityException;
+    public abstract void encryptFile(String srcFile, String destFile, String userKey) throws GeneralSecurityException;
 }

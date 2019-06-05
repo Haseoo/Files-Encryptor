@@ -2,6 +2,8 @@ package com.rootnetsec.cryptofile.cipher.filemanager;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.security.GeneralSecurityException;
+
 import com.rootnetsec.cryptofile.PBKDF2Hashing;
 import com.rootnetsec.cryptofile.cipher.javaCipher.JavaCipher;
 
@@ -13,7 +15,7 @@ public class FileManagerForDecryption extends FileManager {
     private byte[] salt,
                    iv;
 
-    public FileManagerForDecryption(String inputPath, String outputPath) throws Exception {
+    public FileManagerForDecryption(String inputPath, String outputPath) throws IOException, GeneralSecurityException {
         super(inputPath, outputPath);
 
         final int LONG_HEADER_SIZE;
@@ -75,7 +77,7 @@ public class FileManagerForDecryption extends FileManager {
         return chunk;
     }
 
-    private byte[] decryptHeader(byte[] header) throws Exception {
+    private byte[] decryptHeader(byte[] header) throws GeneralSecurityException {
 
         final SecretKeySpec key = new SecretKeySpec(HASH, "AES");
         IvParameterSpec parameters = new IvParameterSpec(IV);
