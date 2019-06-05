@@ -2,20 +2,16 @@ package com.rootnetsec.cryptofile.cipher.filemanager;
 
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.security.GeneralSecurityException;
 
 import com.rootnetsec.cryptofile.PBKDF2Hashing;
 import com.rootnetsec.cryptofile.cipher.javaCipher.JavaCipher;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 public class FileManagerForDecryption extends FileManager {
     private byte[] salt,
                    iv;
 
-    public FileManagerForDecryption(String inputPath, String outputPath) throws IOException, GeneralSecurityException {
+    public FileManagerForDecryption(String inputPath, String outputPath) throws IOException {
         super(inputPath, outputPath);
 
         final int LONG_HEADER_SIZE;
@@ -34,11 +30,11 @@ public class FileManagerForDecryption extends FileManager {
         shortHeaderBuffer.position(shortHeaderBuffer.position() + Byte.BYTES);
 
         LONG_HEADER_SIZE = shortHeaderBuffer.getInt();
-        byte[] longHeaderEncrypted = new byte[LONG_HEADER_SIZE];
+        byte[] longHeader = new byte[LONG_HEADER_SIZE];
 
-        inputStream.read(longHeaderEncrypted, 0, LONG_HEADER_SIZE);
+        inputStream.read(longHeader, 0, LONG_HEADER_SIZE);
 
-        ByteBuffer headerBuffer = ByteBuffer.wrap(decryptHeader(longHeaderEncrypted));
+        ByteBuffer headerBuffer = ByteBuffer.wrap(longHeader);
 
         numberOfChunks = headerBuffer.getInt();
 
@@ -77,16 +73,6 @@ public class FileManagerForDecryption extends FileManager {
         return chunk;
     }
 
-    private byte[] decryptHeader(byte[] header) throws GeneralSecurityException {
-
-        final SecretKeySpec key = new SecretKeySpec(HASH, "AES");
-        IvParameterSpec parameters = new IvParameterSpec(IV);
-        final javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES/CBC/PKCS5PADDING");
-        cipher.init(Cipher.DECRYPT_MODE, key, parameters);
-
-        return cipher.doFinal(header);
-
-    }
 
     public void writeChunk(byte[] data) throws IOException {
         outputStream.write(data);

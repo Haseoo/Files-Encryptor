@@ -17,9 +17,6 @@ abstract public class FileManager implements AutoCloseable {
     static public final int SHORT_HEADER_SIZE = Short.BYTES + Byte.BYTES + Integer.BYTES;
     static  public final short MAGIC_HEADER = (short)0xDEAD;
 
-    protected final byte[] IV = {0x5e, 0x18, 0x59, 0x09, 0xC, 0xf, 0x16, 0x5C, 0x21, 0x11, 0x09, 0x1f, 0x67, 0xD, 0x4f, 0x0c};
-    protected final byte[] HASH = "BIK91349Y43198YE8HIXAHIOADSUOHDA".getBytes();
-
 
 
     public FileManager(String inputPath, String outputPath) throws FileNotFoundException {

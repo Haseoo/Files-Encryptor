@@ -180,7 +180,7 @@ public class MainController {
         }
         if (workingMode == 0 && PasswordService.searchHaveIBeenPwnedDatabase(passwordText)) {
             YesNoAlert alert = new YesNoAlert("Password",
-                    "Your password is weak!\nContinue?",
+                    "Your password is insecure!\nContinue?",
                     Alert.AlertType.WARNING);
             alert.showAndWait();
             if (!alert.answerWasYes()) {

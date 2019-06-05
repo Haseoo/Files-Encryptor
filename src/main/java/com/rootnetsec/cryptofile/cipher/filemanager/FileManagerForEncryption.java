@@ -2,39 +2,27 @@ package com.rootnetsec.cryptofile.cipher.filemanager;
 
 import com.rootnetsec.cryptofile.cipher.Cipher;
 
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 
 public class FileManagerForEncryption extends FileManager {
-    public FileManagerForEncryption(String inputPath, String outputPath, byte[] salt, byte[] iv, Cipher.EncryptionType type) throws GeneralSecurityException, IOException {
+    public FileManagerForEncryption(String inputPath, String outputPath,
+                                    byte[] salt, byte[] iv,
+                                    Cipher.EncryptionType type) throws IOException {
         super(inputPath, outputPath);
         numberOfChunks = (int)(Math.ceil((fileSize / (double) MAX_CHUNK_SIZE)));
         outputStream.write(prepareHeader(salt, iv, type));
     }
 
-    private byte[] prepareHeader(byte[] salt, byte[] iv, Cipher.EncryptionType type) throws GeneralSecurityException {
+    private byte[] prepareHeader(byte[] salt, byte[] iv, Cipher.EncryptionType type) {
         final int HEADER_SIZE;
         final int LONG_HEADER_SIZE;
-        final int LONG_ENCRYPTED_HEADER_SIZE;
 
         LONG_HEADER_SIZE = 3 * Integer.BYTES + salt.length + iv.length;
-        ByteBuffer longHeader = ByteBuffer.allocate(LONG_HEADER_SIZE);
-
-        longHeader.putInt(numberOfChunks);
-        longHeader.putInt(salt.length);
-        longHeader.put(salt);
-        longHeader.putInt(iv.length);
-        longHeader.put(iv);
-
-        byte[] encryptedLongHeader = encryptHeader(longHeader.array());
-        LONG_ENCRYPTED_HEADER_SIZE = encryptedLongHeader.length;
-
-        HEADER_SIZE = Short.BYTES + Byte.BYTES + Integer.BYTES + LONG_ENCRYPTED_HEADER_SIZE;
-
+        HEADER_SIZE = LONG_HEADER_SIZE + SHORT_HEADER_SIZE;
         ByteBuffer header = ByteBuffer.allocate(HEADER_SIZE);
+
         header.putShort(MAGIC_HEADER);
 
         byte encType = 0;
@@ -50,9 +38,13 @@ public class FileManagerForEncryption extends FileManager {
                 break;
         }
         header.put(encType);
+        header.putInt(LONG_HEADER_SIZE);
 
-        header.putInt(LONG_ENCRYPTED_HEADER_SIZE);
-        header.put(encryptedLongHeader);
+        header.putInt(numberOfChunks);
+        header.putInt(salt.length);
+        header.put(salt);
+        header.putInt(iv.length);
+        header.put(iv);
 
         return header.array();
     }
@@ -77,18 +69,5 @@ public class FileManagerForEncryption extends FileManager {
         outputStream.write(chunkSizeByte.array());
         outputStream.write(data);
     }
-
-    private byte[] encryptHeader(byte[] header) throws GeneralSecurityException {
-
-
-        final SecretKeySpec key = new SecretKeySpec(HASH, "AES");
-        IvParameterSpec parameters = new IvParameterSpec(IV);
-        final javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES/CBC/PKCS5PADDING");
-        cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, key, parameters);
-        return cipher.doFinal(header);
-
-        }
-
-
 
 }
