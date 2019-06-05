@@ -9,8 +9,10 @@ import java.util.Optional;
  * Simple Yes/No JavaFX alert
  */
 public class YesNoAlert {
-    private Alert alert; /**JavaFX alert dialog object*/
-    private Optional<ButtonType> result; /**User's answer*/
+    /**JavaFX alert dialog object*/
+    private Alert alert;
+    /**User's answer*/
+    private Optional<ButtonType> result;
 
     /** Constructor that makes an alert dialog with specified title, message and type
      * @param title The title of the alert dialog

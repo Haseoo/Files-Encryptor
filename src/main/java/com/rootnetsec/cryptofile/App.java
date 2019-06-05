@@ -8,6 +8,8 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 
+import java.io.IOException;
+
 /**
  * Main JavaFX class.
  */
@@ -22,10 +24,10 @@ public class App extends Application {
 
     /**
      * @param stage Initializes and runs the JavaFX scene based on a fxml file.
-     * @throws Exception
+     * @throws IOException Throws an exception when fails to read the fxml file
      */
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/layout.fxml"));
 
         Scene scene = new Scene(root);

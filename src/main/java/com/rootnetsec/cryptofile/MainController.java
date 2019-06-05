@@ -35,10 +35,10 @@ public class MainController {
      */
     @FXML
     private BorderPane mainPane;
-    @FXML
     /**
      * The checkbox group that allows the user to choose whether to encrypt or decrypt a file
      */
+    @FXML
     private ToggleGroup mode;
     /**
      * The field that holds user's password
@@ -88,7 +88,7 @@ public class MainController {
      * @param type The type of dialog alert
      * @param title The title of the alert dialog
      * @param text The text that will be displayed in the dialog
-     * @return
+     * @return true when thread is running otherwise false
      */
     private static Alert getAlert(Alert.AlertType type, String title, String text) {
         Alert alert = new Alert(type);

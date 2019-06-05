@@ -7,10 +7,20 @@ import com.rootnetsec.cryptofile.PBKDF2Hashing;
 import com.rootnetsec.cryptofile.cipher.javaCipher.JavaCipher;
 
 
+/**
+ * The class that is used to read encrypted files
+ */
 public class FileManagerForDecryption extends FileManager {
-    private byte[] salt,
-                   iv;
+    /**Salt read from file*/
+    private byte[] salt;
+    /**IV read form file*/
+    private byte[] iv;
 
+    /** Opens files and reads reads the header of an encrypted file
+     * @param inputPath The path of an input file
+     * @param outputPath The path of an output file
+     * @exception IOException Thrown when the file has invalid header or other IO error occurred
+    */
     public FileManagerForDecryption(String inputPath, String outputPath) throws IOException {
         super(inputPath, outputPath);
 
@@ -58,6 +68,11 @@ public class FileManagerForDecryption extends FileManager {
 
     }
 
+    /**
+     * @return Returns next chunk of the encrypted file
+     * @throws IOException Thrown when the file can not be accessed
+     */
+
     public byte[] getChunk() throws IOException {
         if (currentChunk >= numberOfChunks) {
             throw new IndexOutOfBoundsException("Index " + currentChunk + " is out of bounds!");
@@ -74,14 +89,24 @@ public class FileManagerForDecryption extends FileManager {
     }
 
 
+    /** Writes a chunk of data in the output file
+     * @param data The chunk of data
+     * @throws IOException Thrown when the file can not be accessed or written
+     */
     public void writeChunk(byte[] data) throws IOException {
         outputStream.write(data);
     }
 
+    /** Returns IV that was read from file
+     * @return IV that was read from file
+     */
     public byte[] getIV() {
         return this.iv;
     }
 
+    /** Returns salt that was read from file
+     * @return Salt that was read from file
+     */
     public byte[] getSalt() {
         return this.salt;
     }

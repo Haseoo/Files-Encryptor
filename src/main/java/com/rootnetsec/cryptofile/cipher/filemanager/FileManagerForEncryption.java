@@ -4,18 +4,42 @@ import com.rootnetsec.cryptofile.cipher.Cipher;
 
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.security.GeneralSecurityException;
 
+
+/**
+ * Class that is used to manage files that are going to be encrypted
+ */
 public class FileManagerForEncryption extends FileManager {
+    /**The salt that is used in the encryption process*/
+    private byte[] salt;
+    /**The IV that is used in the encryption process*/
+    private byte[] iv;
+    /**Used encryption algorithm*/
+    private Cipher.EncryptionType type;
+
+    /** Opens files, initializes numberOfChunks and prepares output file header
+     * @param inputPath The path of an input file
+     * @param outputPath The path of an output file
+     * @param salt The salt that is used in the encryption process
+     * @param iv The IV that is used in the encryption process
+     * @param type Used encryption algorithm
+     * @throws IOException Thrown when an IO error occurred
+     */
     public FileManagerForEncryption(String inputPath, String outputPath,
                                     byte[] salt, byte[] iv,
                                     Cipher.EncryptionType type) throws IOException {
         super(inputPath, outputPath);
+        this.salt = salt;
+        this.iv = iv;
+        this.type = type;
         numberOfChunks = (int)(Math.ceil((fileSize / (double) MAX_CHUNK_SIZE)));
-        outputStream.write(prepareHeader(salt, iv, type));
+        outputStream.write(prepareHeader());
     }
 
-    private byte[] prepareHeader(byte[] salt, byte[] iv, Cipher.EncryptionType type) {
+    /** Prepares end returns file header
+     * @return prepared file header
+     */
+    private byte[] prepareHeader() {
         final int HEADER_SIZE;
         final int LONG_HEADER_SIZE;
 
@@ -49,6 +73,10 @@ public class FileManagerForEncryption extends FileManager {
         return header.array();
     }
 
+    /**
+     * @return Returns next chunk of the input file
+     * @throws IOException Thrown when the file can not be accessed
+     */
     public byte[] getChunk() throws IOException {
         if (currentChunk >= numberOfChunks) {
             throw new IndexOutOfBoundsException("Index " + currentChunk + " is out of bounds!");
@@ -63,6 +91,10 @@ public class FileManagerForEncryption extends FileManager {
         return chunk;
     }
 
+    /** Writes a chunk of data in the encrypted file
+     * @param data The chunk of data
+     * @throws IOException Thrown when the file can not be accessed or written
+     */
     public void writeChunk(byte[] data) throws IOException {
         ByteBuffer chunkSizeByte = ByteBuffer.allocate(Integer.BYTES);
         chunkSizeByte.putInt(data.length);
