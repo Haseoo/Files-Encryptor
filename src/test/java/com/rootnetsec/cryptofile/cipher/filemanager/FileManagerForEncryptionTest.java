@@ -24,8 +24,6 @@ public class FileManagerForEncryptionTest {
 
             long numberOfModelFileChunks = (long) Math.ceil(new File(inFilePath).length() / (double) FileManager.MAX_CHUNK_SIZE);
             assertEquals(numberOfModelFileChunks, fileManagerForEncryption.getNumberOfChunks());
-        } catch (Exception e) {
-            throw e;
         }
     }
 
@@ -37,10 +35,8 @@ public class FileManagerForEncryptionTest {
         try(FileManagerForEncryption fileManagerForEncryption =
                     new FileManagerForEncryption(inFilePath, outFilePath, new byte[] {1},new byte[] {1}, Cipher.EncryptionType.AES)) {
 
-            assertTrue(Arrays.equals(fileManagerForEncryption.getChunk(), model));
+            assertArrayEquals(fileManagerForEncryption.getChunk(), model);
 
-        } catch (Exception e) {
-            throw e;
         }
     }
 
@@ -54,8 +50,6 @@ public class FileManagerForEncryptionTest {
            fileManagerForEncryption.getChunk();
            fileManagerForEncryption.getChunk();
 
-        } catch (Throwable e) {
-            throw e;
         }
     }
 
@@ -68,8 +62,6 @@ public class FileManagerForEncryptionTest {
                     new FileManagerForEncryption(inFilePath, outFilePath, new byte[] {1},new byte[] {1}, Cipher.EncryptionType.AES)) {
             fileManagerForEncryption.writeChunk(model);
 
-        } catch (Exception e) {
-            throw e;
         }
 
         ByteBuffer bbf = ByteBuffer.wrap(Files.readAllBytes(Paths.get(outFilePath)));
@@ -82,7 +74,7 @@ public class FileManagerForEncryptionTest {
         byte[] writtenBytes = new byte[size];
         bbf.get(writtenBytes, 0, size);
 
-        assertTrue(Arrays.equals(writtenBytes, model));
+        assertArrayEquals(writtenBytes, model);
 
     }
 
