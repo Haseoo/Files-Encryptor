@@ -6,6 +6,11 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.7'
 }
 
+test {
+    dependsOn cleanTest
+    testLogging.showStandardStreams = true
+}
+
 sourceSets {
     main {
         resources {

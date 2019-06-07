@@ -7,13 +7,20 @@ import java.security.spec.InvalidKeySpecException;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
 
-//TODO KAROL WEŹ ZRoB DO TEGO DOUMNETACJE I TESTY!!!!!!!!!!!!!!!!!!!!!!
+/**
+ * Class uses PBKDF2 key derivation algorithm with SHA1 to hash the user specified password.
+ */
 
 public final class PBKDF2Hashing {
     public static final int SALT_BYTES              = 24;
     private static final String PBKDF2_ALGORITHM    = "PBKDF2WithHmacSHA1";
     private static final int HASH_BYTES             = 32;
     private static final int HASH_ITERATIONS        = 10000;
+
+    /** Hash the user supplied data
+     * @param data Data to hash.
+     * @return Byte array of derived hash.
+     */
 
     public static byte[] hash(String data) throws NoSuchAlgorithmException, InvalidKeySpecException {
         char[] char_data = data.toCharArray();
@@ -31,12 +38,18 @@ public final class PBKDF2Hashing {
 
     }
 
+    /** Hash the user supplied data with provided salt.
+     * @param data Data to hash.
+     * @param data Salt used in hashing.
+     * @return Byte array of derived hash.
+     */
+
     public static byte[] hash(String data, byte[] salt) throws GeneralSecurityException {
         char[] char_data = data.toCharArray();
         PBEKeySpec key = new PBEKeySpec(char_data, salt, HASH_ITERATIONS, HASH_BYTES * 8);
-        SecretKeyFactory secretKey = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        SecretKeyFactory secretKey = SecretKeyFactory.getInstance(PBKDF2_ALGORITHM);
         byte[] hash = secretKey.generateSecret(key).getEncoded();
-            
+        
         return hash;
 
     }
