@@ -230,7 +230,6 @@ public class MainController {
                     processProgress.setProgress(1);
                 }catch (Throwable e) {
                     exceptionString = e.toString();
-                   //TODO LOGGER e.printStackTrace();
                     throw new Exception(e.getMessage());
                 }
                 if (wasAnException) {
