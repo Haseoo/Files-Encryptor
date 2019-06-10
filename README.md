@@ -13,4 +13,4 @@ The program is run with the command:
 -   `gradlew.bat run` dla Windows
 -   `gradlew run` – dla Linux i MacOS
     
-Using the 'jar' command, you can compile the program into a jar file for the current operating system and run the program from a .jar file, but in Windows there is a problem with running encryption algorithms from the .jar file.ASDASD
+Using the 'jar' command, you can compile the program into a jar file for the current operating system and run the program from a .jar file, but in Windows there is a problem with running encryption algorithms from the .jar file.
