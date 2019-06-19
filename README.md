@@ -1,5 +1,5 @@
 # Files encryptor
-![Logo](https://dr2csg.dm.files.1drv.com/y4mlQ8YuFHSP5bYoGmWuuyqtplTYhkyiQeNZe-SGgGHvI1P_15pD7UOwMLtbYcCfpnyyU0Xy_BbdLBfADeiirfes1C65gTfptIq16LSjuV17MtduOl4CVRXQ9HZu91qo0wkK5wevq6_LhbBctVgeATmaWmbE9_DVbL8E5xGwuqkEbQFnyqBqUuGQSKd_poyC9suUX_xJQBaMsLtGX0kI497Yg?width=1115&height=445&cropmode=none)
+![Logo](https://dr2csg.dm.files.1drv.com/y4mrnTLirSh5xuixgsV4UmDbU0QiUUpWzO5IZtO57uRqnab-V6huDOioJglfRig8zXzko0Aic2IEDxiIEeVczaHMMHEIk0dCqbVkmsPb94wZwR_KDjbMojK_P3MUKH8HJBz11jdl5FmatXYey5vTVdNpb9Z_ynehW_Bv6qN7Tr--KKJ1mJMTYfcL3OFlX4QZkahz1PQnHLNnxgb5obaEwdbcQ?width=1115&height=445&cropmode=none)
 This program can encrypt (and decrypt) a file provided by the user using one of three encryption algorithms:
  - AES / CBC / PKCS5PADDING
  - SERPENT / CBC / PKCS7Padding
