@@ -2,6 +2,7 @@ package com.rootnetsec.cryptofile.cipher.javaCipher;
 
 import com.rootnetsec.cryptofile.cipher.filemanager.FileManager;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -173,8 +174,9 @@ public class AESCipherTest {
         Files.deleteIfExists(Paths.get(outFilePath));
     }
 
-    @After
-    public void after() throws Exception {
+    @AfterClass
+    public static void after() throws Exception {
         Files.deleteIfExists(Paths.get("TestFile2.txt"));
+        Files.deleteIfExists(Paths.get("TestFile.enc"));
     }
 }
