@@ -1,5 +1,5 @@
 # Files encryptor
-![Logo](https://raw.githubusercontent.com/Haseoo/Files-Encryptor/master/logo.png?token=AI2P2C4QEH5IFYVCC4BIEJ25A6DF4)
+![Logo](https://raw.githubusercontent.com/Haseoo/Files-Encryptor/master/src/main/resources/logo2.png?token=AI2P2C4DA2I7X55VOMQ24FK5A6I7G)
 This program can encrypt (and decrypt) a file provided by the user using one of three encryption algorithms:
  - AES / CBC / PKCS5PADDING
  - SERPENT / CBC / PKCS7Padding
