@@ -1,5 +1,5 @@
 # Files encryptor
-![Logo](https://raw.githubusercontent.com/Haseoo/Files-Encryptor/master/src/main/resources/logo2.png?token=AI2P2C4DA2I7X55VOMQ24FK5A6I7G)
+![Logo](https://dr2csg.dm.files.1drv.com/y4mlQ8YuFHSP5bYoGmWuuyqtplTYhkyiQeNZe-SGgGHvI1P_15pD7UOwMLtbYcCfpnyyU0Xy_BbdLBfADeiirfes1C65gTfptIq16LSjuV17MtduOl4CVRXQ9HZu91qo0wkK5wevq6_LhbBctVgeATmaWmbE9_DVbL8E5xGwuqkEbQFnyqBqUuGQSKd_poyC9suUX_xJQBaMsLtGX0kI497Yg?width=1115&height=445&cropmode=none)
 This program can encrypt (and decrypt) a file provided by the user using one of three encryption algorithms:
  - AES / CBC / PKCS5PADDING
  - SERPENT / CBC / PKCS7Padding
